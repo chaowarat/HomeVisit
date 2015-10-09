@@ -6,7 +6,7 @@ var appIndex = {
         document.addEventListener('deviceready', this.onDeviceReady, false);
     },
     onDeviceReady: function() {
-        app.receivedEvent('deviceready');
+        appIndex.receivedEvent('deviceready');
     },
     receivedEvent: function(id) {
 		

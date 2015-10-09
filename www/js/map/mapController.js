@@ -5,10 +5,10 @@
 	};
 	var isEdit = false;
 	var bindings = [];
-	var originText = '';
+	var routeIndex = 0, legIndex = 0;
 
 	function init(query) {
-	    originText = '';
+	    routeIndex = 0;
 	    isEdit = false;
 	    oldAnswer = null;
 	    var contacts = JSON.parse(localStorage.getItem("f7Contacts"));
@@ -66,8 +66,8 @@
 	        var directionsDisplay = new google.maps.DirectionsRenderer;
 	        var directionsService = new google.maps.DirectionsService;
 	        var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-	        //directionsDisplay.setMap(map);
-	        //calculateAndDisplayRoute(directionsService, directionsDisplay, _center, new google.maps.LatLng(contact.lat, contact.long));
+	        directionsDisplay.setMap(map);
+	        calculateAndDisplayRoute(directionsService, directionsDisplay, _center, new google.maps.LatLng(contact.lat, contact.long));
 	    }
 	}
 
@@ -79,8 +79,6 @@
 	}
 
 	function calculateAndDisplayRoute(directionsService, directionsDisplay, origin, destination) {
-	    console.log(origin)
-	    console.log(destination)
 	    directionsService.route({
 	        origin: origin,
 	        destination: destination,
@@ -95,6 +93,8 @@
 	                    }
 	                }	                
 	            }
+	            var tmp = response.routes[routeIndex].legs[legIndex];
+	            View.setHeader(tmp.distance.text, tmp.duration.text);
 	            directionsDisplay.setDirections(response);
 	        } else {
 	            window.alert('Directions request failed due to ' + status);

@@ -113,14 +113,14 @@
 			new Contact({ "firstName": "Kate", "lastName": "Shy", "company": "Big Marketing", "phone": "+380631234562", "email": "mimimi@umail.com", "city": "Moscow" }),
 			new Contact({ "firstName": "Michael", "lastName": "Fold", "company": "1+1", "email": "slevoc@umail.com", "city": "Kiev", isFavorite: true }),
 			new Contact({ "firstName": "Ann", "lastName": "Ryder", "company": "95 Style", "email": "ryder@umail.com", "city": "Kiev" }),
-			new Contact({ "firstName": "Andrew", "lastName": "Smith", "company": "Cycle", "phone": "+380631234567", "email": "drakula@umail.com", "city": "Kiev", lat: 13.724015, long: 100.559236 }),
+			new Contact({ "firstName": "Andrew", "lastName": "Smith", "company": "Cycle", "phone": "+380631234567", "email": "drakula@umail.com", "city": "Kiev", lat: 14.724015, long: 100.559236 }),
 			new Contact({ "firstName": "Olga", "lastName": "Blare", "company": "Finance Time", "phone": "+380631234566", "email": "olga@umail.com", "city": "Kiev" }),
 			new Contact({ "firstName": "Svetlana", "lastName": "Kot", "company": "Global Think", "phone": "+380631234567", "email": "kot@umail.com", "city": "Odessa" }),
 			new Contact({ "firstName": "Kate", "lastName": "Lebedeva", "company": "Samsung", "phone": "+380631234568", "email": "kate@umail.com", "city": "Kiev" }),
 			new Contact({ "firstName": "Oleg", "lastName": "Price", "company": "Unilever", "phone": "+380631234568", "email": "uni@umail.com", "city": "Praha", isFavorite: true }),
 			new Contact({ "firstName": "Ivan", "lastName": "Ivanov", "company": "KGB", "phone": "+380631234570", "email": "agent@umail.com", "city": "Moscow" }),
 			new Contact({ "firstName": "Nadya", "lastName": "Lovin", "company": "Global Think", "phone": "+380631234567", "email": "kot@umail.com", "city": "Odessa" }),
-			new Contact({ "firstName": "Alex", "lastName": "Proti", "company": "Samsung", "phone": "+380631234568", "email": "kate@umail.com", "city": "Kiev", lat: 13.719688, long: 100.600481 }),
+			new Contact({ "firstName": "Alex", "lastName": "Proti", "company": "Samsung", "phone": "+380631234568", "email": "kate@umail.com", "city": "Kiev", lat: 15.719688, long: 100.600481 }),
 			new Contact({ "firstName": "Oleg", "lastName": "Ryzhkov", "company": "Unilever", "phone": "+380631234568", "email": "uni@umail.com", "city": "Praha", isFavorite: true }),
 			new Contact({ "firstName": "Daniel", "lastName": "Ricci", "company": "Finni", "phone": "+380631234570", "email": "agent@umail.com", "city": "Milan" })
         ];
