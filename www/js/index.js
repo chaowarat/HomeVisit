@@ -9,7 +9,10 @@ var appIndex = {
         appIndex.receivedEvent('deviceready');
     },
     receivedEvent: function(id) {
-		
+        //pictureSource=navigator.camera.PictureSourceType;
+        console.log(555)
+        //destinationType=navigator.camera.DestinationType;
+        console.log(navigator.camera)
     }
 };
 

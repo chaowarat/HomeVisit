@@ -1,9 +1,7 @@
-define(['app', 'js/contactModel', 'hbs!js/map/map'], function (app, Contact, dailyForm) {
-    var $ = Dom7;
-    var contact;
+define(['app', 'js/contactModel', 'hbs!js/takePhoto/takePhoto'], function (app, Contact, dailyForm) {
+	var $ = Dom7;
 
-    function render(params) {
-        contact = params.model;
+	function render(params) {
 	    var template = dailyForm({ model: params.model });
 		app.f7.popup(template);
 		bindEvents(params.bindings);
@@ -16,15 +14,12 @@ define(['app', 'js/contactModel', 'hbs!js/map/map'], function (app, Contact, dai
 		}
 	}
 
-	function bindUIEvent(assessmentCallback, infoCallback) {
-	    $('.button-assessment').on('click', function () {
-			assessmentCallback();
+	function bindUIEvent(homePhotoCallbackCallback, infoCallback) {
+	    $('.button-homePhoto').on('click', function () {
+	        homePhotoCallback();
 	    });
 	    $('.button-showInfo').on('click', function () {
 	        infoCallback();
-	    });
-	    $('.button-takePhoto').on('click', function () {
-	        app.router.load('takePhoto', { id: contact.id });
 	    });
 	}
 
