@@ -1,9 +1,9 @@
-<div id="takePhotoPanel" class="popup">
+<div id="takePhotoModal" class="popup">
     <div class="view view-popup navbar-fixed">
         <div class="navbar">
             <div class="navbar-inner">
                 <div class="left">
-                    <a href="#" class="back link close-modal">
+                    <a href="#" class="back link close-takePhoto">
                         <i class="icon icon-back"></i><div id="mapTitle">ถ่ายรูป</div>
                     </a>
                 </div>
@@ -21,14 +21,34 @@
                         <p>ประเมินล่าสุดเมื่อ 11/22/33</p>
                     </div>
                 </div>
-                <div style="text-align:center;padding: 0 20px 0 20px">
-                    <p class="buttons-row">
-                        <a href="#" class="button button-raised button-homePhoto">ถ่ายรูปบ้าน</a>
-                        <a href="#" class="button button-raised button-personPhoto">ถ่ายรูปครอบครัว</a>
-                    </p>
-                </div>
                 <div style="height:300px;width:100%">
-                    <img id="cameraPic" />
+                    <!--ถ่ายรูปบ้าน-->
+                    <div class="card">
+                        <div class="card-header">รูปบ้าน</div>
+                        <div class="card-content">
+                            <div class="card-content-inner" style="float: left;width:100%;height:228px;overflow: hidden;">
+                                <img id="imgHome" style="display: block;max-width: 80%;height: auto;" />
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a href="#" class="button button-home-photo"><i class="ion-camera" style="font-size: 45px;"></i></a>
+                            <a href="#" class="button button-home-library"><i class="ion-images" style="font-size: 45px;"></i></a>
+                        </div>
+                    </div>
+                    <!--ถ่ายรูปครอบครัว-->
+                    <div class="card">
+                        <div class="card-header">รูปครอบครัว</div>
+                        <div class="card-content">
+                            <div class="card-content-inner">
+                                <img id="imgFamily" style="height:228px;" />
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a href="#" class="button button-family-photo"><i class="ion-camera" style="font-size: 45px;"></i></a>
+                            <a href="#" class="button button-family-library"><i class="ion-images" style="font-size: 45px;"></i></a>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
         </div>

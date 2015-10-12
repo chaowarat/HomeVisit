@@ -5,8 +5,8 @@
 	};
 	var isEdit = false;
 	var bindings = [];
-	var pictureSource;   // picture source
-	var destinationType; // sets the format of returned value
+	var pictureSource, destinationType;
+	var cameraPopoverHandle, isTakePhoto = true, isHome = true;
 
 	function init(query) {
 	    pictureSource = navigator.camera.PictureSourceType;
@@ -24,65 +24,68 @@
 	        contact = new Contact({ isFavorite: query.isFavorite });
 	        state.isNew = true;
 	    }	    
-	    View.render({ model: contact, bindings: bindings, homePhotoCallback: homePhoto, infoCallback: infoClick });
-	}
+	    View.render({
+	        model: contact, bindings: bindings,
+	        homePhotoCallback: homePhoto, homeLibraryCallback: homeLibrary,
+	        familyPhotoCallback: familyPhoto, familyLibraryCallback: familyLibrary
+	    });
+	}	
 
-	var cameraPopoverHandle;
-
-	function startCamera() {
-
+	function getPhoto() {
 	    cameraPopoverHandle = navigator.camera.getPicture(onSuccess, onFail,
          {
              destinationType: Camera.DestinationType.FILE_URI,
              sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
              popoverOptions: new CameraPopoverOptions(300, 300, 200, 200, Camera.PopoverArrowDirection.ARROW_ANY)
          });
-
 	}
-
 	function onSuccess(u) {
-	    console.log('onSuccess');
-	    document.querySelector("#canvas").src = u;
+	    var image = document.getElementById('imgHome');
+	    if (!isHome) {
+	        image = document.getElementById('imgFamily');
+	    }
+	    image.src = u;
 	}
-
 	function onFail(e) {
 	    console.log('onFail');
 	    console.dir(e);
 	}
 
-	function homePhoto() {
+	function takePhoto() {
 	    navigator.camera.getPicture(picOnSuccess, picOnFailure, {
-	        quality: 20,
+	        quality: 100,
 	        destinationType: Camera.DestinationType.DATA_URL,
 	        sourceType: Camera.PictureSourceType.CAMERA,
 	        correctOrientation: true
 	    });
 	}
-
-	function getPhoto() {
-        console.log(555)
-	    navigator.camera.getPicture(picOnSuccess, picOnFailure, {
-	        destinationType: Camera.DestinationType.FILE_URI,
-	        sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
-	        popoverOptions: new CameraPopoverOptions(300, 300, 200, 200, Camera.PopoverArrowDirection.ARROW_ANY),
-	        correctOrientation: true
-	    });
-	}
-
 	function picOnSuccess(imageData) {
-	    console.log(imageData)
-	    var image = document.getElementById('cameraPic');
-	    image.src = imageData;
-	    sPicData = imageData; //store image data in a variable
+	    var image = document.getElementById('imgHome');
+	    if (!isHome) {
+	        image = document.getElementById('imgFamily');
+	    }
+	    image.src = "data:image/jpeg;base64," + imageData;
 	}
-
 	function picOnFailure(message) {
 	    console.log(message)
 	    alert('Failed because: ' + message);
 	}
 
-	function infoClick() {
-	    console.log('info');
+	function homePhoto() {
+	    isTakePhoto = true; isHome = true;
+	    takePhoto();
+	}
+	function homeLibrary() {
+	    isTakePhoto = false; isHome = true;
+	    getPhoto();
+	}
+	function familyPhoto() {
+	    isTakePhoto = true; isHome = false;
+	    takePhoto();
+	}
+	function familyLibrary() {
+	    isTakePhoto = false; isHome = false;
+	    getPhoto();
 	}
 
 	function closePage() {

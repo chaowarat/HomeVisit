@@ -5,7 +5,7 @@ define(['app', 'js/contactModel', 'hbs!js/takePhoto/takePhoto'], function (app, 
 	    var template = dailyForm({ model: params.model });
 		app.f7.popup(template);
 		bindEvents(params.bindings);
-		bindUIEvent(params.homePhotoCallback, params.infoCallback);
+		bindUIEvent(params.homePhotoCallback, params.homeLibraryCallback, params.familyPhotoCallback, params.familyLibraryCallback);
 	}
 
 	function bindEvents(bindings) {
@@ -14,12 +14,23 @@ define(['app', 'js/contactModel', 'hbs!js/takePhoto/takePhoto'], function (app, 
 		}
 	}
 
-	function bindUIEvent(homePhotoCallback, infoCallback) {
-	    $('.button-homePhoto').on('click', function () {
+	function bindUIEvent(homePhotoCallback, homeLibraryCallback, familyPhotoCallback, familyLibraryCallback) {
+	    $('.button-home-photo').on('click', function () {
 	        homePhotoCallback();
 	    });
-	    $('.button-showInfo').on('click', function () {
-	        infoCallback();
+	    $('.button-home-library').on('click', function () {
+	        homeLibraryCallback();
+	    });
+
+	    $('.button-family-photo').on('click', function () {
+	        familyPhotoCallback();
+	    });
+	    $('.button-family-library').on('click', function () {
+	        familyLibraryCallback();
+	    });
+
+	    $('.close-takePhoto').on('click', function () {
+	        app.f7.closeModal('#takePhotoModal');
 	    });
 	}
 
