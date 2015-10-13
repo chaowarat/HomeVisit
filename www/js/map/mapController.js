@@ -38,7 +38,7 @@
     }
 
     function infoClick() {
-        console.log('info');
+        app.router.load('PersonalDetail', { id: contact.id });
     }
 
     function onMapsApiLoaded() {        

@@ -19,6 +19,9 @@ define(['app', 'js/contactModel', 'hbs!js/Form/Form'], function (app, Contact, F
 			var inputValues = $('.contact-edit-form input');
 			doneCallback(inputValues);
 		});
+		$('.close-Form').on('click', function () {
+		    app.f7.closeModal('#formModal');
+		});
 	}
 
 	return {
