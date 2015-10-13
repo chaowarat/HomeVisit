@@ -33,7 +33,7 @@
     }
 
     function assessmentClick() {
-
+        app.router.load('Form', { id: contact.id });
     }
 
     function infoClick() {
@@ -41,7 +41,7 @@
     }
 
     function onMapsApiLoaded() {        
-        var _center = new google.maps.LatLng(16.745841, 100.19629);
+        var _center = new google.maps.LatLng(16.745841, 100.19629); // bangkok
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
                 originText = 'ตำแหน่งปัจจุบัน';

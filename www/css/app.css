@@ -3,7 +3,7 @@ body {
 }
 .navbar {
   border-bottom: none;
-  background: #74baee;
+  background: #8BC34A;
   color: #ffffff;
 }
 .navbar a.link {
@@ -13,7 +13,7 @@ body {
   background: #fff;
 }
 .searchbar {
-  background: #74baee;
+  background: #8BC34A;
   border-bottom: 0px;
 }
 .content-block-title {
@@ -35,15 +35,15 @@ i.ion-compose {
   font-weight: 100;
 }
 .panel {
-  background: #7a9dbb;
+  background: #689F38;
 }
 .panel ul {
   border-bottom: 0px;
-  border-top: 1px solid #8ba9c4;
+  border-top: 1px solid #558B2F;
 }
 .panel .list-block .item-content {
-  background: #7a9dbb;
-  border-bottom: 1px solid #8ba9c4;
+  background: #689F38;
+  border-bottom: 1px solid #558B2F;
 }
 .panel .list-block .item-link:active {
   background-color: #5884aa;
@@ -61,7 +61,7 @@ i.ion-compose {
   font-weight: 100;
 }
 body.with-panel-left-reveal .statusbar-overlay {
-  background: #7a9dbb;
+  background: #689F38;
 }
 .popup-overlay {
   background: rgba(128, 128, 128, 0.2);
@@ -71,7 +71,7 @@ body.with-panel-left-reveal .statusbar-overlay {
   -webkit-backface-visibility: hidden;
 }
 .statusbar-overlay {
-  background: #74baee;
+  background: #8BC34A;
 }
 .contacts-list {
   margin: 0;
@@ -178,7 +178,7 @@ body.with-panel-left-reveal .statusbar-overlay {
   position: absolute;
   left: 106px;
   top: 60px;
-  color: #74baee;
+  color: #8BC34A;
   font-size: 16px;
 }
 .contact-page .header-text h3 {

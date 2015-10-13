@@ -1,4 +1,4 @@
-﻿define(["app", "js/contactModel", "js/dailyForm/dailyFormView"], function (app, Contact, View) {
+﻿define(["app", "js/contactModel", "js/Form/FormView"], function (app, Contact, View) {
 	var contact = null;
 	var state = {
 		isNew: false
