@@ -11,7 +11,13 @@
         </div>
         <div class="page">
             <div class="page-content contact-edit-form">
-                <div style="width:100%;height:55%" id="map"></div>
+                <div style="width:100%;height:55%">
+                    <div style="width:65%;height:100%;display:inline-block" id="map"></div>
+                    <div style="display: inline-block; width: 32%;height:100%" id="mapDetail">
+                        <div id="right-panel" style="width: 100%;height:100%;overflow: hidden;"></div>
+                    </div>
+                </div>                
+                
                 <div class="contact-header">
                     <div class="item-photo">
                         <img src="img/cats/{{model.picId}}.png" />
@@ -22,6 +28,7 @@
                         <p>ประเมินล่าสุดเมื่อ 11/22/33</p>
                     </div>
                 </div>
+
                 <div style="text-align:center;padding: 0 20px 0 20px">
                     <p class="buttons-row">
                         <a href="#" class="button button-raised button-showInfo">ข้อมูลส่วนบุคคล</a>

@@ -1,6 +1,13 @@
 body {
   background: #ffffff;
 }
+.adp{
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    padding-right: 100px;
+
+}
 .navbar {
   border-bottom: none;
   background: #8BC34A;
