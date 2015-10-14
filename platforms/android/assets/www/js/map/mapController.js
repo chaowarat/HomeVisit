@@ -70,7 +70,7 @@
                 directionByDefault();
             }, {
                 enableHighAccuracy: true
-                      , timeout: 500
+                      , timeout: 5000
             });
         }
         else {
@@ -156,7 +156,7 @@
                     response.routes[0].legs[0].end_address = contact.firstName + ' ' + contact.lastName;                    
                 }
                 var tmp = response.routes[routeIndex].legs[legIndex];
-                View.setHeader(tmp.distance.text, tmp.duration.text);
+                View.setHeader(tmp.distance.text.replace('km','กม.'), tmp.duration.text.replace('hours', 'ชม.').replace('mins', 'นาที'));
                 app.f7.hideIndicator();
                 directionsDisplay.setDirections(response);
             } else {
