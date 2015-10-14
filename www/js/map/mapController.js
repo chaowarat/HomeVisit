@@ -41,8 +41,7 @@
         app.router.load('PersonalDetail', { id: contact.id });
     }
 
-    function onMapsApiLoaded() {        
-        var _center = new google.maps.LatLng(16.745841, 100.19629); // bangkok
+    function onMapsApiLoaded() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
                 originText = 'ตำแหน่งปัจจุบัน';
@@ -66,31 +65,38 @@
                 calculateAndDisplayRoute(directionsService, directionsDisplay, mapOptions.center, new google.maps.LatLng(contact.lat, contact.long));
             },
             function (error) {
-                alert(error.message);
+                app.f7.hideIndicator();
+                app.f7.pickerModal('.picker-info');
+                directionByDefault();
             }, {
                 enableHighAccuracy: true
-                      , timeout: 10000
+                      , timeout: 5000
             });
         }
         else {
-            var mapOptions = {
-                zoom: 10,
-                center: _center,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            }
-            map = new google.maps.Map(document.getElementById("map"), mapOptions);
-            var directionsDisplay = new google.maps.DirectionsRenderer({
-                draggable: true,
-                map: map,
-                panel: document.getElementById('right-panel')
-            });            
-            var directionsService = new google.maps.DirectionsService;
-            directionsDisplay.setMap(map);
-            calculateAndDisplayRoute(directionsService, directionsDisplay, _center, new google.maps.LatLng(contact.lat, contact.long));
-            directionsDisplay.addListener('directions_changed', function () {
-                checkLocationChange(directionsDisplay.getDirections());
-            });
+            directionByDefault();
         }
+    }
+
+    function directionByDefault() {
+        var _center = new google.maps.LatLng(16.745841, 100.19629); // bangkok
+        var mapOptions = {
+            zoom: 10,
+            center: _center,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+        map = new google.maps.Map(document.getElementById("map"), mapOptions);
+        var directionsDisplay = new google.maps.DirectionsRenderer({
+            draggable: true,
+            map: map,
+            panel: document.getElementById('right-panel')
+        });
+        var directionsService = new google.maps.DirectionsService;
+        directionsDisplay.setMap(map);
+        calculateAndDisplayRoute(directionsService, directionsDisplay, _center, new google.maps.LatLng(contact.lat, contact.long));
+        directionsDisplay.addListener('directions_changed', function () {
+            checkLocationChange(directionsDisplay.getDirections());
+        });
     }
 
     function checkLocationChange(newLocation) {
@@ -150,7 +156,7 @@
                     response.routes[0].legs[0].end_address = contact.firstName + ' ' + contact.lastName;                    
                 }
                 var tmp = response.routes[routeIndex].legs[legIndex];
-                View.setHeader(tmp.distance.text, tmp.duration.text);
+                View.setHeader(tmp.distance.text.replace('km','กม.'), tmp.duration.text.replace('hours', 'ชม.').replace('mins', 'นาที'));
                 app.f7.hideIndicator();
                 directionsDisplay.setDirections(response);
             } else {

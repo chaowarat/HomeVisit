@@ -1,4 +1,4 @@
-<div class="popup">
+<div class="popup tablet-fullscreen">
     <div class="view view-popup navbar-fixed">
         <div class="navbar">
             <div class="navbar-inner">
@@ -11,7 +11,13 @@
         </div>
         <div class="page">
             <div class="page-content contact-edit-form">
-                <div style="width:100%;height:55%" id="map"></div>
+                <div style="width:100%;height:55%">
+                    <div style="width:65%;height:100%;display:inline-block" id="map"></div>
+                    <div style="display: inline-block; width: 32%;height:100%" id="mapDetail">
+                        <div id="right-panel" style="width: 100%;height:100%;overflow: hidden;"></div>
+                    </div>
+                </div>                
+                
                 <div class="contact-header">
                     <div class="item-photo">
                         <img src="img/cats/{{model.picId}}.png" />
@@ -22,6 +28,7 @@
                         <p>ประเมินล่าสุดเมื่อ 11/22/33</p>
                     </div>
                 </div>
+
                 <div style="text-align:center;padding: 0 20px 0 20px">
                     <p class="buttons-row">
                         <a href="#" class="button button-raised button-showInfo">ข้อมูลส่วนบุคคล</a>
@@ -35,4 +42,21 @@
             </div>
         </div>
     </div>
+
+    <div class="picker-modal picker-info">
+        <div class="toolbar">
+            <div class="toolbar-inner">
+                <div class="left"></div>
+                <div class="right"><a href="#" class="close-picker">ปิด</a></div>
+            </div>
+        </div>
+        <div class="picker-modal-inner">
+            <div class="content-block">
+                <h4>ไม่สามารถค้นหาตำแหน่งของอุปกรณ์ได้</h4>
+                <p>โปรดตรวจสอบการตั้งค่าตำแหน่งของอุปกรณ์(Location) ว่าเปิดใช้งานแล้ว</p>
+                <p>*ระบบจะใช้ตำแหน่งอ้างอิง กรุงเทพฯ กรณีค้นหาตำแหน่งไม่พบ</p>
+            </div>
+        </div>
+    </div>
+
 </div>

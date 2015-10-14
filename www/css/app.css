@@ -274,3 +274,16 @@ html.android .label-switch input[type="checkbox"] + .checkbox:after {
 html.android .list-block .list-group-title {
   display: none;
 }
+.picker-modal.picker-info .content-block{
+    font-family: 'THK2DJuly8', sans-serif;
+    line-height: 1.7em;
+}
+.picker-modal.picker-info .toolbar{
+    background-color: #8BC34A;
+}
+.picker-modal.picker-info .toolbar .toolbar-inner .right a{
+    padding: 10px;
+    color: white;
+    font-size: 18px;
+}
+

@@ -7,6 +7,7 @@
     var bindings = [];
     var routeIndex = 0, legIndex = 0;
     var originText = '';
+    var homeLatLong = null, map;
 
     function init(query) {
         app.f7.showIndicator();
@@ -33,15 +34,14 @@
     }
 
     function assessmentClick() {
-
+        app.router.load('Form', { id: contact.id });
     }
 
     function infoClick() {
-        console.log('info');
+        app.router.load('PersonalDetail', { id: contact.id });
     }
 
-    function onMapsApiLoaded() {        
-        var _center = new google.maps.LatLng(16.745841, 100.19629);
+    function onMapsApiLoaded() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
                 originText = 'ตำแหน่งปัจจุบัน';
@@ -49,33 +49,91 @@
                     zoom: 6,
                     center: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
                     mapTypeId: google.maps.MapTypeId.ROADMAP
-                }
-                var directionsDisplay = new google.maps.DirectionsRenderer;
-                var directionsService = new google.maps.DirectionsService;
+                }                
                 document.getElementById("map").innerHTML = null;
-                var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+                map = new google.maps.Map(document.getElementById("map"), mapOptions);
+                var directionsDisplay = new google.maps.DirectionsRenderer({
+                    draggable: true,
+                    map: map,
+                    panel: document.getElementById('right-panel')
+                });
+                directionsDisplay.addListener('directions_changed', function () {
+                    checkLocationChange(directionsDisplay.getDirections());
+                });
+                var directionsService = new google.maps.DirectionsService;
                 directionsDisplay.setMap(map);
                 calculateAndDisplayRoute(directionsService, directionsDisplay, mapOptions.center, new google.maps.LatLng(contact.lat, contact.long));
             },
             function (error) {
-                alert(error.message);
+                app.f7.hideIndicator();
+                app.f7.pickerModal('.picker-info');
+                directionByDefault();
             }, {
                 enableHighAccuracy: true
-                      , timeout: 5000
+                      , timeout: 500
             });
         }
         else {
-            var mapOptions = {
-                zoom: 10,
-                center: _center,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            }
-            var directionsDisplay = new google.maps.DirectionsRenderer;
-            var directionsService = new google.maps.DirectionsService;
-            var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-            directionsDisplay.setMap(map);
-            calculateAndDisplayRoute(directionsService, directionsDisplay, _center, new google.maps.LatLng(contact.lat, contact.long));
+            directionByDefault();
         }
+    }
+
+    function directionByDefault() {
+        var _center = new google.maps.LatLng(16.745841, 100.19629); // bangkok
+        var mapOptions = {
+            zoom: 10,
+            center: _center,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+        map = new google.maps.Map(document.getElementById("map"), mapOptions);
+        var directionsDisplay = new google.maps.DirectionsRenderer({
+            draggable: true,
+            map: map,
+            panel: document.getElementById('right-panel')
+        });
+        var directionsService = new google.maps.DirectionsService;
+        directionsDisplay.setMap(map);
+        calculateAndDisplayRoute(directionsService, directionsDisplay, _center, new google.maps.LatLng(contact.lat, contact.long));
+        directionsDisplay.addListener('directions_changed', function () {
+            checkLocationChange(directionsDisplay.getDirections());
+        });
+    }
+
+    function checkLocationChange(newLocation) {
+        if (!homeLatLong) {
+            return;
+        }        
+        var destination = newLocation.routes[0].legs[0].end_location;
+        if (originText != '') {
+            destination.start_address = originText;
+            destination.end_address = contact.firstName + ' ' + contact.lastName;
+        }
+        if (destination.G != homeLatLong.G || destination.K != homeLatLong.K) {
+            alert(555666)
+
+            homeLatLong = destination;            
+        }
+    }
+
+    function mapDetail() {
+        
+    }
+
+    function offsetCenter(latlng, offsetx, offsety) {
+        var scale = Math.pow(2, map.getZoom());
+        var nw = new google.maps.LatLng(
+            map.getBounds().getNorthEast().lat(),
+            map.getBounds().getSouthWest().lng()
+        );
+        var worldCoordinateCenter = map.getProjection().fromLatLngToPoint(latlng);
+        var pixelOffset = new google.maps.Point((offsetx / scale) || 0, (offsety / scale) || 0)
+
+        var worldCoordinateNewCenter = new google.maps.Point(
+            worldCoordinateCenter.x - pixelOffset.x,
+            worldCoordinateCenter.y + pixelOffset.y
+        );
+        var newCenter = map.getProjection().fromPointToLatLng(worldCoordinateNewCenter);
+        map.setCenter(newCenter);
     }
 
     function handleLocationError(browserHasGeolocation, pos) {
@@ -92,13 +150,10 @@
             travelMode: google.maps.TravelMode.DRIVING
         }, function (response, status) {
             if (status == google.maps.DirectionsStatus.OK) {
+                homeLatLong = response.routes[0].legs[0].end_location;
                 if (originText != '') {
-                    for (var i = 0; i < response.routes.length; i++) {
-                        for (var j = 0; j < response.routes[i].legs.length; j++) {
-                            response.routes[i].legs[j].start_address = originText;
-                            response.routes[i].legs[j].end_address = contact.firstName + ' ' + contact.lastName;
-                        }
-                    }
+                    response.routes[0].legs[0].start_address = originText;
+                    response.routes[0].legs[0].end_address = contact.firstName + ' ' + contact.lastName;                    
                 }
                 var tmp = response.routes[routeIndex].legs[legIndex];
                 View.setHeader(tmp.distance.text, tmp.duration.text);
