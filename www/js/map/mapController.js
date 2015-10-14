@@ -69,7 +69,7 @@
                 alert(error.message);
             }, {
                 enableHighAccuracy: true
-                      , timeout: 5000
+                      , timeout: 10000
             });
         }
         else {
