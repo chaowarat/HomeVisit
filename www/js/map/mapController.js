@@ -7,7 +7,7 @@
     var bindings = [];
     var routeIndex = 0, legIndex = 0;
     var originText = '';
-    var homeLatLong = null, map;
+    var homeLatLong = null, map, destination = null;
 
     function init(query) {
         app.f7.showIndicator();
@@ -49,7 +49,7 @@
                     zoom: 6,
                     center: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
                     mapTypeId: google.maps.MapTypeId.ROADMAP
-                }                
+                }
                 document.getElementById("map").innerHTML = null;
                 map = new google.maps.Map(document.getElementById("map"), mapOptions);
                 var directionsDisplay = new google.maps.DirectionsRenderer({
@@ -102,38 +102,36 @@
     function checkLocationChange(newLocation) {
         if (!homeLatLong) {
             return;
-        }        
-        var destination = newLocation.routes[0].legs[0].end_location;
+        }
+        destination = newLocation.routes[0].legs[0].end_location;
         if (originText != '') {
             destination.start_address = originText;
             destination.end_address = contact.firstName + ' ' + contact.lastName;
         }
-        if (destination.G != homeLatLong.G || destination.K != homeLatLong.K) {
-            alert(555666)
-
-            homeLatLong = destination;            
+        if (destination.G != homeLatLong.G || destination.K != homeLatLong.K) {            
+            var buttons = [
+                {
+                    text: 'บันทึก',
+                    bold: true,
+                    onClick: function () {
+                        homeLatLong = destination;
+                        contact.lat = homeLatLong.G;
+                        contact.long = homeLatLong.K;
+                        var contacts = JSON.parse(localStorage.getItem("f7Contacts"));
+                        for (var i = 0; i < contacts.length; i++) {
+                            if (contacts[i].id == contact.id) {
+                                contacts[i] = contact;
+                            }
+                        }
+                        localStorage.setItem("f7Contacts", JSON.stringify(contacts));
+                    }
+                },
+                {
+                    text: 'ยกเลิก'
+                }
+            ];
+            app.f7.actions(buttons);
         }
-    }
-
-    function mapDetail() {
-        
-    }
-
-    function offsetCenter(latlng, offsetx, offsety) {
-        var scale = Math.pow(2, map.getZoom());
-        var nw = new google.maps.LatLng(
-            map.getBounds().getNorthEast().lat(),
-            map.getBounds().getSouthWest().lng()
-        );
-        var worldCoordinateCenter = map.getProjection().fromLatLngToPoint(latlng);
-        var pixelOffset = new google.maps.Point((offsetx / scale) || 0, (offsety / scale) || 0)
-
-        var worldCoordinateNewCenter = new google.maps.Point(
-            worldCoordinateCenter.x - pixelOffset.x,
-            worldCoordinateCenter.y + pixelOffset.y
-        );
-        var newCenter = map.getProjection().fromPointToLatLng(worldCoordinateNewCenter);
-        map.setCenter(newCenter);
     }
 
     function handleLocationError(browserHasGeolocation, pos) {
@@ -153,10 +151,10 @@
                 homeLatLong = response.routes[0].legs[0].end_location;
                 if (originText != '') {
                     response.routes[0].legs[0].start_address = originText;
-                    response.routes[0].legs[0].end_address = contact.firstName + ' ' + contact.lastName;                    
+                    response.routes[0].legs[0].end_address = contact.firstName + ' ' + contact.lastName;
                 }
                 var tmp = response.routes[routeIndex].legs[legIndex];
-                View.setHeader(tmp.distance.text.replace('km','กม.'), tmp.duration.text.replace('hours', 'ชม.').replace('mins', 'นาที'));
+                View.setHeader(tmp.distance.text.replace('km', 'กม.'), tmp.duration.text.replace('hours', 'ชม.').replace('mins', 'นาที'));
                 app.f7.hideIndicator();
                 directionsDisplay.setDirections(response);
             } else {
@@ -164,15 +162,6 @@
                 alert('Directions request failed due to ' + status);
             }
         });
-    }
-
-    function findValue(array, key) {
-        for (var i = 0; i < array.length; i++) {
-            if (Object.keys(array[i])[0] == key) {
-                return array[i][key];
-            }
-        }
-        return null;
     }
 
     function closePage() {
