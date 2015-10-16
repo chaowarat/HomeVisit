@@ -7,18 +7,27 @@
                         <i class="icon icon-back"></i><div id="mapTitle">แผนที่</div>
                     </a>
                 </div>
+                <div class="right" style="padding:15px">
+                    <a href="#" data-panel="right" class="back link open-panel">
+                        <i class="icon ion-navigate"></i>
+                    </a>
+                </div>
             </div>
         </div>
         <div class="page">
             <div class="page-content contact-edit-form">
                 <div style="width:100%;height:100%">
-                    <div style="width:65%;height:100%;display:inline-block" id="map"></div>
-                    <div style="display: inline-block; width: 32%;height:100%" id="mapDetail">
-                        <div id="right-panel" style="width: 100%;height:100%;overflow-y: hidden;"></div>
-                    </div>
-                </div>                
+                    <div style="width:100%;height:100%" id="map"></div>
+                </div>
             </div>
         </div>
+    </div>
+
+    <div class="panel-overlay"></div>
+
+    <!-- Right Panel with Cover effect -->
+    <div class="panel panel-right panel-cover">
+        <div id="right-panel" style="width: 100%;height:100%;"></div>
     </div>
 
     <div class="picker-modal picker-info">
