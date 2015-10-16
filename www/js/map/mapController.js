@@ -23,7 +23,7 @@
             contact = new Contact({ isFavorite: query.isFavorite });
             state.isNew = true;
         }
-        View.render({ model: contact, bindings: bindings, assessmentCallback: assessmentClick, infoCallback: infoClick });
+        View.render({ model: contact, bindings: bindings });
         if (!app.isGetMap) {
             app.isGetMap = true;
             $.getScript('https://maps.googleapis.com/maps/api/js?v=3&?key=AIzaSyBDuskq2c_6ezrnB2W7Qa0FP6ykAooGxUc&sensor=false&callback=onMapsApiLoaded');
@@ -31,14 +31,6 @@
         else {
             onMapsApiLoaded();
         }
-    }
-
-    function assessmentClick() {
-        app.router.load('Form', { id: contact.id });
-    }
-
-    function infoClick() {
-        app.router.load('PersonalDetail', { id: contact.id });
     }
 
     function onMapsApiLoaded() {
@@ -111,7 +103,7 @@
         if (destination.G != homeLatLong.G || destination.K != homeLatLong.K) {            
             var buttons = [
                 {
-                    text: 'บันทึก',
+                    text: 'บันทึกตำแหน่งของที่อยู่ใหม่',
                     bold: true,
                     onClick: function () {
                         homeLatLong = destination;
