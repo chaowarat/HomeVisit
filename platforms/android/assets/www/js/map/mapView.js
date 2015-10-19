@@ -7,7 +7,7 @@ define(['app', 'js/contactModel', 'hbs!js/map/map'], function (app, Contact, dai
 	    var template = dailyForm({ model: params.model });
 		app.f7.popup(template);
 		bindEvents(params.bindings);
-		bindUIEvent(params.assessmentCallback, params.infoCallback);
+		bindUIEvent();
 	}
 
 	function bindEvents(bindings) {
@@ -16,20 +16,14 @@ define(['app', 'js/contactModel', 'hbs!js/map/map'], function (app, Contact, dai
 		}
 	}
 
-	function bindUIEvent(assessmentCallback, infoCallback) {
-	    $('.button-assessment').on('click', function () {
-			assessmentCallback();
-	    });
-	    $('.button-showInfo').on('click', function () {
-	        infoCallback();
-	    });
-	    $('.button-takePhoto').on('click', function () {
-	        app.router.load('takePhoto', { id: contact.id });
+	function bindUIEvent() {
+	    $('.close-map').on('click', function () {
+	        app.f7.closeModal('#mapModal');
 	    });
 	}
 
 	function setHeader(distance, duration) {
-	    $('#mapTitle').text('กลับ ' + distance + ' (' + duration + ')');
+	    $('#mapTitle').text(distance + '(' + duration + ')');
 	}
 
 	return {

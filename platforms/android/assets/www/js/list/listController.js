@@ -14,7 +14,7 @@
     var bindings = [{
         element: '.list-group li.contact-item',
         event: 'click',
-        handler: openMap
+        handler: openMenu
     }];
 
     var state = {
@@ -73,14 +73,14 @@
         }
     }
 
-    function openMap(e) {
+    function openMenu(e) {
         var target = e.target;
         var i = 0;
         while (target.getAttribute('class') != 'contact-item' && i < 10) {
             target = target.parentNode;
             i++;
         }
-        app.router.load('map', { id: target.getAttribute('data-id') });
+        app.router.load('menu', { id: target.getAttribute('data-id') });
     }
 
     function showAll() {

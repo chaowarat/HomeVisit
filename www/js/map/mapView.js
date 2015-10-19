@@ -23,7 +23,7 @@ define(['app', 'js/contactModel', 'hbs!js/map/map'], function (app, Contact, dai
 	}
 
 	function setHeader(distance, duration) {
-	    $('#mapTitle').text('กลับ ' + distance + ' (' + duration + ')');
+	    $('#mapTitle').text(distance + '(' + duration + ')');
 	}
 
 	return {

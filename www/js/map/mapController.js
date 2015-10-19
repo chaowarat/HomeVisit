@@ -146,7 +146,7 @@
                     response.routes[0].legs[0].end_address = contact.firstName + ' ' + contact.lastName;
                 }
                 var tmp = response.routes[routeIndex].legs[legIndex];
-                View.setHeader(tmp.distance.text.replace('km', 'กม.'), tmp.duration.text.replace('hours', 'ชม.').replace('mins', 'นาที'));
+                View.setHeader(tmp.distance.text.replace(' km', 'กม.'), tmp.duration.text.replace(' hours ', '.').replace(' mins', 'ชม'));
                 app.f7.hideIndicator();
                 directionsDisplay.setDirections(response);
             } else {

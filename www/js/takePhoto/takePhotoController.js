@@ -68,7 +68,7 @@
 	}
 	function picOnFailure(message) {
 	    console.log(message)
-	    alert('Failed because: ' + message);
+	    //alert('Failed because: ' + message);
 	}
 
 	function homePhoto() {
