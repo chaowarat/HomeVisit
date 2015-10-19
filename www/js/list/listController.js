@@ -54,7 +54,11 @@
         var target = e.target.parentNode.parentNode;
         var value = target.getAttribute('value');
         if (value) {
-            if (value == menus.length - 1) { // logout
+            if (value == '0') { // Home
+                var contacts = loadContacts();
+                ListView.reRender({ bindings: bindings, model: contacts, header: getHeaderName(target.getAttribute('id')) });
+            }
+            else if (value == menus.length - 1) { // logout
                 // clear user data and back to login screen
                 // ***
                 ////////////////////
@@ -65,7 +69,7 @@
             }
             else if (value == menus.length - 3) { // data management
                 app.router.load('sync');
-            }
+            }            
             else { // room
                 var contacts = loadContacts();
                 ListView.reRender({ bindings: bindings, model: contacts, header: getHeaderName(target.getAttribute('id')) });
