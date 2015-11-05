@@ -26,7 +26,7 @@
         View.render({ model: contact, bindings: bindings });
         if (!app.isGetMap) {
             app.isGetMap = true;
-            $.getScript('https://maps.googleapis.com/maps/api/js?v=3&?key=AIzaSyBDuskq2c_6ezrnB2W7Qa0FP6ykAooGxUc&sensor=false&callback=onMapsApiLoaded');
+            $.getScript('https://maps.googleapis.com/maps/api/js?v=3&?key=AIzaSyBDuskq2c_6ezrnB2W7Qa0FP6ykAooGxUc&sensor=false&language=th&callback=onMapsApiLoaded');
         }
         else {
             onMapsApiLoaded();

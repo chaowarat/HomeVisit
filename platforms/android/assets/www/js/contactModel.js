@@ -5,7 +5,8 @@ define(['app'],function(app) {
 		this.id = values['id'] || app.utils.generateGUID();
 		this.picId = values['picId'] || app.utils.getRandomInt(1,10);
 		this.createdOn = values['createdOn'] || new Date();
-
+		this.class = values['class'] || 'อนุบาล';
+		this.room = values['room'] || 1;
 		this.firstName = values['firstName'] || '';
 		this.lastName = values['lastName'] || '';
 		this.company = values['company'] || '';
