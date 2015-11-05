@@ -278,6 +278,9 @@ html.android .list-block .list-group-title {
     font-family: 'THK2DJuly8', sans-serif;
     line-height: 1.7em;
 }
+.toolbar{
+    background-color: #689F38;
+}
 .picker-modal.picker-info .toolbar{
     background-color: #8BC34A;
 }

@@ -5,7 +5,7 @@
     var bindings = [{
         element: '.list-group li.contact-item',
         event: 'click',
-        handler: openMenu
+        handler: openContact
     }];
 
     var state = {
@@ -30,19 +30,58 @@
             bindings: bindings,
             model: contacts,
             menu: menu,
+            loginCallback: login,
             header: getHeaderName(0)
-        });
+        });        
+    }
+
+    function countUnSync() {
+        return app.utils.getAnswers().length;
+    }
+
+    function login(user, pass) {
+        if (user && pass) {
+            app.f7.showIndicator();
+            var url = 'http://private-edu.azurewebsites.net/webservices/getservice.svc/getCheckUser?USERNAME=' + user + '&PASSWORD=' + pass;
+            Dom7.ajax({
+                url: url,
+                dataType: 'json',
+                success: function (msg) {
+                    app.f7.hideIndicator();
+                    var response = JSON.parse(msg);
+                    localStorage.setItem("user", response.data.Name);
+                    localStorage.setItem("host", response.data.HostID);
+                    if (response.status.toLowerCase() == 'ok') {
+                        var memo = { 0: app.utils.Base64.encode(user), 1: app.utils.Base64.encode(pass) };
+                        localStorage.setItem("memo", JSON.stringify(memo));
+                        app.f7.closeModal('.login-screen');
+                        if (loadContacts().length == 0) {
+                            app.f7.alert('ต้องการนำเข้าข้อมูลนักเรียนหรือไม่?', 'ไม่พบข้อมูลนักเรียน!', function () {
+                                app.router.load('sync');
+                            });
+                        }
+                    }
+                    else {
+                        app.f7.alert(response.errorMessage, 'ERROR!');
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    app.f7.hideIndicator();
+                    app.f7.alert(xhr.responseText + 'โปรดลงทะเบียนที่ระบบหลัก', 'ERROR!');
+                }
+            });            
+        }        
     }
 
     function generateMenu() {
         var rooms = getRooms();
         menu = [
-            { id: 0, text: 'หน้าแรก', value: '0', icon: 'icon ion-home' }
+            { id: 0, text: localStorage.getItem('user'), value: '0', icon: 'icon ion-person' }
         ];
         for (i = 0; i < rooms.length; i++) {
             menu.push({ id: (i + 1), text: rooms[i], value: rooms[i], icon: 'icon ion-clipboard' });
         }
-        menu.push({ id: rooms.length + 1, text: 'จัดการข้อมูล', value: '' + (rooms.length + 1), icon: 'icon ion-loop' });
+        menu.push({ id: rooms.length + 1, text: 'จัดการข้อมูล', value: '' + (rooms.length + 1), icon: 'icon ion-loop', unSync: countUnSync() });
         menu.push({ id: rooms.length + 2, text: 'ตั้งค่าแบบฟอร์ม', value: '' + (rooms.length + 2), icon: 'icon ion-settings' });
         menu.push({ id: rooms.length + 3, text: 'ออกจากระบบ', value: '' + (rooms.length + 3), icon: 'icon ion-log-in' });
     }
@@ -50,9 +89,9 @@
     function getRooms() {
         var contacts = JSON.parse(localStorage.getItem("f7Contacts"));
         var groups = _.groupBy(contacts, function (value) {
-            return value.class + ' ' + value.room;
+            return value.class + '/' + value.roomId;
         });
-        var tmp = Object.keys(groups);
+        var tmp = Object.keys(groups);        
         tmp.sort(function (a, b) {
             if (a > b && a.split(' ')[0] == b.split(' ')[0]) {
                 return 1;
@@ -82,34 +121,33 @@
                 ListView.reRender({ bindings: bindings, model: contacts, header: getHeaderName(target.getAttribute('id')) });
             }
             else if (value == menu.length - 1) { // logout
-                // clear user data and back to login screen
-                // ***
-                ////////////////////
-                app.f7.loginScreen();
+                app.f7.showIndicator();
+                localStorage.clear();
+                setTimeout(function () { app.f7.hideIndicator(); location.reload(); }, 1000);
             }
             else if (value == menu.length - 2) { // formEdit
                 app.router.load('formTemplate');
             }
             else if (value == menu.length - 3) { // data management
                 app.router.load('sync');
-            }            
+            }
             else { // room
-                var split = value.split(' ');
-                var filter = { "room": split[1], "class": split[0] };
+                var split = value.split('/');
+                var filter = { "roomId": split[1], "class": split[0] };
                 var contacts = loadContacts(filter);
                 ListView.reRender({ bindings: bindings, model: contacts, header: getHeaderName(target.getAttribute('id')) });
             }
         }
     }
 
-    function openMenu(e) {
+    function openContact(e) {
         var target = e.target;
         var i = 0;
         while (target.getAttribute('class') != 'contact-item' && i < 10) {
             target = target.parentNode;
             i++;
         }
-        app.router.load('menu', { id: target.getAttribute('data-id') });
+        app.router.load('Form', { id: target.getAttribute('data-id') });
     }
 
     function showAll() {
@@ -126,7 +164,10 @@
 
     function loadContacts(filter) {
         var f7Contacts = localStorage.getItem("f7Contacts");
-        var contacts = f7Contacts ? JSON.parse(f7Contacts) : tempInitializeStorage();
+        if (!f7Contacts) {
+            return [];
+        }
+        var contacts = JSON.parse(f7Contacts);
         if (filter) {
             contacts = _.filter(contacts, filter);
         }
@@ -136,87 +177,50 @@
         return contacts;
     }
 
-    function tempInitializeStorage() {
-        var contacts = [
-			new Contact({ "firstName": "Alex", "class":"อนุบาล", "room":"1", "lastName": "Black", "company": "Global Think", "phone": "+380631234561", "email": "ainene@umail.com", "city": "London", isFavorite: true, lat: 13.754595, long: 100.602089 }),
-			new Contact({ "firstName": "Kate", "class": "อนุบาล", "room": "1", "lastName": "Shy", "company": "Big Marketing", "phone": "+380631234562", "email": "mimimi@umail.com", "city": "Moscow" }),
-			new Contact({ "firstName": "Michael", "class": "อนุบาล", "room": "1", "lastName": "Fold", "company": "1+1", "email": "slevoc@umail.com", "city": "Kiev", isFavorite: true }),
-			new Contact({ "firstName": "Ann", "class": "อนุบาล", "room": "2", "lastName": "Ryder", "company": "95 Style", "email": "ryder@umail.com", "city": "Kiev" }),
-			new Contact({ "firstName": "Andrew", "class": "อนุบาล", "room": "2", "lastName": "Smith", "company": "Cycle", "phone": "+380631234567", "email": "drakula@umail.com", "city": "Kiev", lat: 14.724015, long: 100.559236 }),
-			new Contact({ "firstName": "Olga", "class": "อนุบาล", "room": "3", "lastName": "Blare", "company": "Finance Time", "phone": "+380631234566", "email": "olga@umail.com", "city": "Kiev" }),
-			new Contact({ "firstName": "Svetlana", "class": "อนุบาล", "room": "3", "lastName": "Kot", "company": "Global Think", "phone": "+380631234567", "email": "kot@umail.com", "city": "Odessa" }),
-			new Contact({ "firstName": "Kate", "class": "อนุบาล", "room": "3", "lastName": "Lebedeva", "company": "Samsung", "phone": "+380631234568", "email": "kate@umail.com", "city": "Kiev" }),
-			new Contact({ "firstName": "Oleg", "class": "มัธยมต้น", "room": "2", "lastName": "Price", "company": "Unilever", "phone": "+380631234568", "email": "uni@umail.com", "city": "Praha", isFavorite: true }),
-			new Contact({ "firstName": "Ivan", "class": "มัธยมต้น", "room": "2", "lastName": "Ivanov", "company": "KGB", "phone": "+380631234570", "email": "agent@umail.com", "city": "Moscow" }),
-			new Contact({ "firstName": "Nadya", "class": "มัธยมต้น", "room": "2", "lastName": "Lovin", "company": "Global Think", "phone": "+380631234567", "email": "kot@umail.com", "city": "Odessa" }),
-			new Contact({ "firstName": "Alex", "class": "มัธยมต้น", "room": "2", "lastName": "Proti", "company": "Samsung", "phone": "+380631234568", "email": "kate@umail.com", "city": "Kiev", lat: 15.719688, long: 100.600481 }),
-			new Contact({ "firstName": "Oleg", "class": "มัธยมต้น", "room": "1", "lastName": "Ryzhkov", "company": "Unilever", "phone": "+380631234568", "email": "uni@umail.com", "city": "Praha", isFavorite: true }),
-			new Contact({ "firstName": "Daniel", "class": "มัธยมต้น", "room": "1", "lastName": "Ricci", "company": "Finni", "phone": "+380631234570", "email": "agent@umail.com", "city": "Milan" })
-        ];
-        localStorage.setItem("f7Contacts", JSON.stringify(contacts));
-        return JSON.parse(localStorage.getItem("f7Contacts"));
-    }
-
     function templateInitializeStorage() {
-        var templates = [
-        {
-            id: '001', name: 'แบบฟอร์มที่ 1', content: '',
-            data: [
-                {
-                    sectionId: 1, sectionName: 'ด้านที่ 1',
-                    data: [
-                        {
-                            qText: 'การดื่มนม', qId: '01', qNo: 1,
-                            answer: [
-                                { aText: 'ปฏิบัติได้ดีโดยไม่ต้องตักเตือน', aValue: '3', checked: true },
-                                { aText: 'มีการตักเตือนในบางครั้ง', aValue: '2' },
-                                { aText: 'ยังปฏิบัติด้วยตนเองไม่ได้', aValue: '1' }
-                            ]
-                        },
-                        {
-                            qText: 'การรับประทานอาหาร', qId: '02', qNo: 2,
-                            answer: [
-                                { aText: 'ปฏิบัติได้ดีโดยไม่ต้องตักเตือน', aValue: '3', checked: true },
-                                { aText: 'มีการตักเตือนในบางครั้ง', aValue: '2' },
-                                { aText: 'ยังปฏิบัติด้วยตนเองไม่ได้', aValue: '1' }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    sectionId: 2, sectionName: 'ด้านที่ 2',
-                    data: [
-                        {
-                            qText: 'การนอน', qId: '03', qNo: 1,
-                            answer: [
-                                { aText: 'ปฏิบัติได้ดีโดยไม่ต้องตักเตือน', aValue: '3', checked: true },
-                                { aText: 'มีการตักเตือนในบางครั้ง', aValue: '2' },
-                                { aText: 'ยังปฏิบัติด้วยตนเองไม่ได้', aValue: '1' }
-                            ]
-                        }
-                    ]
-                }
-            ], selected: true
-        },
-        { id: '002', name: 'แบบฟอร์มที่ 2', content: '', data: [] }
-        ];
+        var templates = [{
+            id: app.utils.generateGUID(), name: 'แบบฟอร์มพื้นฐาน', content: '',
+            template: reFormat((JSON.parse(defaultTemplate)).data),
+            selected: true,
+            isDefault: true
+        }];        
         for (var i = 0; i < templates.length; i++) {            
-            templates[i].content = generateContent(templates[i].data);
+            templates[i].content = generateContent(templates[i].template);
         }
         localStorage.setItem("templates", JSON.stringify(templates));
     }
 
+    function reFormat(data) {        
+        var array = [];
+        for (var i = 0; i < data.length; i++) { // section
+            var sections = [];
+            var tmp = data[i].details;
+            for (var j = 0; j < tmp.length; j++) { // level 1
+                sections.push({ id: tmp[j].id, text: tmp[j].text, isQuestion: tmp[j].isQuestion });
+                var tmp2 = tmp[j].details;
+                for (var k = 0; k < tmp2.length; k++) { // level 2
+                    sections.push({ id: tmp2[k].id, text: tmp2[k].text, isQuestion: tmp2[k].isQuestion });
+                    var tmp3 = tmp2[k].details;
+                    for (var l = 0; l < tmp3.length; l++) { // level 3 = question
+                        sections.push({ id: tmp3[l].id, text: tmp3[l].text, isQuestion: tmp3[l].isQuestion });
+                    }
+                }
+            }
+            array.push({ id: data[i].id, text: data[i].text, isQuestion: false, details: sections });
+        }
+        return array;
+    }
+
     function generateContent(data) {
-        var text = '';
+        var text = '', line = '';
         for (var i = 0; i < data.length; i++) {
-            text += data[i].sectionName + ' ';
-            
-            for (var j = 0; j < data[i].data.length && j < 3; j++) {
-                text += data[i].data[j].qText + '...';
+            line = data[i].text + '<br>';
+            var index = 0;
+            while (index < 3) {
+                line += '&nbsp&nbsp&nbsp&nbsp' + data[i].details[index].text.substring(0, 40) + '...<br>';
+                index++;
             }
-            if (i < data.length - 1) {
-                text += '<br>';
-            }
+            text += line;
         }
         if (text.length == 0) {
             text = '...ไม่พบข้อมูลแบบฟอร์ม...';

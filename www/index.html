@@ -49,7 +49,7 @@
     <div class="panel-overlay"></div>
     <!-- Left Panel with Reveal effect -->
     <div class="panel panel-left panel-reveal">
-        <div class="list-block" style="margin-top: 2px">
+        <div id="menuPanel" class="list-block" style="margin-top: 2px">
             <div class="list-group">
                 <ul></ul>
             </div>
@@ -124,11 +124,8 @@
                             </div>
                             <div class="list-block">
                                 <ul>
-                                    <li><a href="#" class="list-button text-bold" style="padding-left:20px">เข้าสู่ระบบ</a></li>
+                                    <li><a href="#" class="list-button text-bold login-submit" style="padding-left:20px">เข้าสู่ระบบ</a></li>
                                 </ul>
-                                <div class="list-block-label">
-                                    <p><a href="#" class="close-login-screen">Close Login Screen</a></p>
-                                </div>
                             </div>
                         </div>
                     </form>
@@ -146,5 +143,6 @@
     <script type="text/javascript" src="lib/lodash.js"></script>
     <script type="text/javascript" src="lib/framework7.js"></script>
     <script data-main="app" src="lib/require.js"></script>
+	<script type="text/javascript" src="template.json"></script>
 </body>
 </html>
