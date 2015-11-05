@@ -1,8 +1,8 @@
-define(['app', 'js/contactModel', 'hbs!js/Form/Form'], function (app, Contact, Form) {
+define(['app', 'js/contactModel', 'hbs!js/Form/Form'], function (app, Contact, dailyForm) {
 	var $ = Dom7;
 
 	function render(params) {
-	    var template = Form({ model: params.model, state: params.state, data: params.data });
+	    var template = dailyForm({ model: params.model, state: params.state, data: params.data });
 		app.f7.popup(template);
 		bindEvents(params.bindings);
 		bindSaveEvent(params.doneCallback);
@@ -16,11 +16,8 @@ define(['app', 'js/contactModel', 'hbs!js/Form/Form'], function (app, Contact, F
 
 	function bindSaveEvent(doneCallback) {
 		$('.contact-save-link').on('click', function() {
-			var inputValues = $('.contact-edit-form input');
+		    var inputValues = $('.daily-list input');
 			doneCallback(inputValues);
-		});
-		$('.close-Form').on('click', function () {
-		    app.f7.closeModal('#formModal');
 		});
 	}
 
