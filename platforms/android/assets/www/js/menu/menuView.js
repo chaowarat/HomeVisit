@@ -28,7 +28,7 @@ define(['app', 'js/contactModel', 'hbs!js/menu/menu'], function (app, Contact, d
 	    });
 	    $('.button-map').on('click', function () {
 	        app.router.load('map', { id: contact.id });
-	    });
+	    });	    
 	}
 
 	return {

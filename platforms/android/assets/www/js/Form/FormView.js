@@ -19,6 +19,9 @@ define(['app', 'js/contactModel', 'hbs!js/Form/Form'], function (app, Contact, d
 		    var inputValues = $('.daily-list input');
 			doneCallback(inputValues);
 		});
+		$('.close-form').on('click', function () {
+		    app.f7.closeModal('#formModal');
+		});
 	}
 
 	return {
