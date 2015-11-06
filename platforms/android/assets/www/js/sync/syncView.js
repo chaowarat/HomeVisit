@@ -1,4 +1,4 @@
-﻿define(['app', 'hbs!js/sync/sync', 'hbs!js/sync/roomPanel', 'hbs!js/sync/rightPanel'], function (app, newForm, room, rpanel) {
+define(['app', 'hbs!js/sync/sync', 'hbs!js/sync/roomPanel', 'hbs!js/sync/rightPanel'], function (app, newForm, room, rpanel) {
 	var $ = Dom7;
 
 	function render(params) {	    
@@ -7,13 +7,25 @@
 	        removeEvents(params.bindings);
 	        $('.sync-content').html(template);	        
 	    }
-	    else { // load new
-	        var template = newForm();
+	    else { // load new	        
+	        var template = newForm({ contactUnSync: params.contactUnSync });
 	        app.f7.popup(template);
 	        $('.sync-content').html(room({ model: params.model.rooms }));
 	    }
 	    bindEvents(params.bindings);
-	    $('.update-time-text').text('ข้อมูลวันที่ : ' + params.model.updateTime);
+	    if (params.model.updateTime) {
+	        $('.update-time-text').text('ข้อมูลวันที่ : ' + params.model.updateTime);
+	    }
+	    else {
+	        $('.update-time-text').text('อัพเดทข้อมูล');
+	    }
+	    if (params.unSync > 0) {
+	        $('.badge').text(params.unSync);
+	        $('.badge').show();
+	    }
+	    else {
+	        $('.badge').hide();
+	    }
 	}
 
 	function renderRight(room, model) {
@@ -36,8 +48,19 @@
 		}
 	}
 
+	function updateCountUnSync(number) {
+	    if (number > 0) {
+	        $('.badge').text(number);
+	        $('.badge').show();
+	    }
+	    else {
+	        $('.badge').hide();
+	    }
+	}
+
 	return {
 	    render: render,
-	    renderRight: renderRight
+	    renderRight: renderRight,
+	    updateCountUnSync: updateCountUnSync
 	};
 });

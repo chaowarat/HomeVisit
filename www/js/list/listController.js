@@ -147,7 +147,7 @@
             target = target.parentNode;
             i++;
         }
-        app.router.load('Form', { id: target.getAttribute('data-id') });
+        app.router.load('menu', { id: target.getAttribute('data-id') });
     }
 
     function showAll() {

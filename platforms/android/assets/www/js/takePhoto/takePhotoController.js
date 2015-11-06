@@ -54,17 +54,18 @@
 	function takePhoto() {
 	    navigator.camera.getPicture(picOnSuccess, picOnFailure, {
 	        quality: 100,
-	        destinationType: Camera.DestinationType.DATA_URL,
+	        destinationType: Camera.DestinationType.FILE_URI,
 	        sourceType: Camera.PictureSourceType.CAMERA,
 	        correctOrientation: true
 	    });
 	}
-	function picOnSuccess(imageData) {
+	function picOnSuccess(imageURI) {
 	    var image = document.getElementById('imgHome');
 	    if (!isHome) {
 	        image = document.getElementById('imgFamily');
 	    }
-	    image.src = "data:image/jpeg;base64," + imageData;
+	    image.src = imageURI;
+	    //image.src = "data:image/jpeg;base64," + imageData;
 	}
 	function picOnFailure(message) {
 	    console.log(message)
