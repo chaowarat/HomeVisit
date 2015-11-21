@@ -67,6 +67,8 @@
 	            template = templates[i].template;
 	        }
 	    }
+        console.log(template)
+	    return template;
 	    if (template) {
 	        var answers = JSON.parse(defaultTemplate).answers;
 	        for (var i = 0; i < template.length; i++) {

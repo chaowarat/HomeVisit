@@ -180,7 +180,7 @@
     function templateInitializeStorage() {
         var templates = [{
             id: app.utils.generateGUID(), name: 'แบบฟอร์มพื้นฐาน', content: '',
-            template: reFormat((JSON.parse(defaultTemplate)).data),
+            template: reFormat((JSON.parse(defaultTemplate))),
             selected: true,
             isDefault: true
         }];        
@@ -190,23 +190,15 @@
         localStorage.setItem("templates", JSON.stringify(templates));
     }
 
-    function reFormat(data) {        
+    function reFormat(data) {
         var array = [];
         for (var i = 0; i < data.length; i++) { // section
             var sections = [];
-            var tmp = data[i].details;
-            for (var j = 0; j < tmp.length; j++) { // level 1
-                sections.push({ id: tmp[j].id, text: tmp[j].text, isQuestion: tmp[j].isQuestion });
-                var tmp2 = tmp[j].details;
-                for (var k = 0; k < tmp2.length; k++) { // level 2
-                    sections.push({ id: tmp2[k].id, text: tmp2[k].text, isQuestion: tmp2[k].isQuestion });
-                    var tmp3 = tmp2[k].details;
-                    for (var l = 0; l < tmp3.length; l++) { // level 3 = question
-                        sections.push({ id: tmp3[l].id, text: tmp3[l].text, isQuestion: tmp3[l].isQuestion });
-                    }
-                }
+            var tmp = data[i].data;
+            for (var j = 0; j < tmp.length; j++) {
+                sections.push({ id: tmp[j].QTID + ':' + tmp[j].QID, text: tmp[j].text, isQuestion: true, answers: tmp[j].answer });                
             }
-            array.push({ id: data[i].id, text: data[i].text, isQuestion: false, details: sections });
+            array.push({ id: data[i].FID, text: data[i].text, isQuestion: false, details: sections });
         }
         return array;
     }
