@@ -40,12 +40,18 @@
 		                for (var j = 0; j < template[i].details.length; j++) {
 		                    if (template[i].details[j].id == questionId && template[i].details[j].isQuestion) { // same question		                        
 		                        var answerId = oldAnswer[m][template[i].details[j].id];
-		                        var _answers = JSON.parse(JSON.stringify(template[i].details[j].answers));
-		                        for (var k = 0; k < _answers.length; k++) {
-		                            if (_answers[k].id == answerId) {
-		                                _answers[k].checked = true;
-		                                template[i].details[j].answers = _answers;
-		                                break;
+		                        if (answerId.indexOf('99999:') != -1) {
+		                            answerId = answerId.split('99999:')[1];
+		                            template[i].details[j]['answerText'] = answerId;
+		                        }
+		                        else {
+		                            var _answers = JSON.parse(JSON.stringify(template[i].details[j].answers));
+		                            for (var k = 0; k < _answers.length; k++) {
+		                                if (_answers[k].id == answerId) {
+		                                    _answers[k].checked = true;
+		                                    template[i].details[j].answers = _answers;
+		                                    break;
+		                                }
 		                            }
 		                        }
 		                        break;
@@ -67,17 +73,18 @@
 	            template = templates[i].template;
 	        }
 	    }
-        console.log(template)
-	    return template;
 	    if (template) {
-	        var answers = JSON.parse(defaultTemplate).answers;
 	        for (var i = 0; i < template.length; i++) {
 	            for (var j = 0; j < template[i].details.length; j++) {
-	                answers[0].checked = true;
-	                template[i].details[j]['answers'] = answers;
+	                template[i].details[j]['answers'][0].checked = true;
+	                if (template[i].details[j]['answers'].length == 1) {
+	                    template[i].details[j]['isInputText'] = true;
+	                }
+	                else {
+	                    template[i].details[j]['isInputText'] = false;
+	                }
 	            }
 	        }
-
 	        return template;
 	    }
 	    else{
@@ -91,6 +98,11 @@
 	        if (inputValues[i].getAttribute('data-type') == 'QA' && inputValues[i].checked) {
 	            var tmp = {};
 	            tmp[inputValues[i].getAttribute('name')] = inputValues[i].getAttribute('value');
+	            QAs.push(tmp);
+	        }
+	        else if (inputValues[i].getAttribute('data-type') == 'TEXT') {
+	            var tmp = {};
+	            tmp[inputValues[i].getAttribute('data-id')] = '99999:' + inputValues[i].value;
 	            QAs.push(tmp);
 	        }
 	    }

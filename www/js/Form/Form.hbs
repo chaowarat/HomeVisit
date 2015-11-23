@@ -43,6 +43,13 @@
                                         {{#if isQuestion}}
                                         <div class="contact-other list-block">
                                             <ul>
+                                                {{#if isInputText}}
+                                                <li>
+                                                    <div class="item-input" style="padding:0 20px 0 20px;">
+                                                        <textarea data-type="TEXT" placeholder="รายละเอียด..." type="text" name="{{../id}}" data-id="{{id}}">{{answerText}}</textarea>
+                                                    </div>
+                                                </li>
+                                                {{else}}
                                                 {{#each answers}}
                                                 <li>
                                                     <label class="label-radio item-content">
@@ -56,6 +63,7 @@
                                                     </label>
                                                 </li>
                                                 {{/each}}
+                                                {{/if}}
                                             </ul>
                                         </div>
                                         {{/if}}

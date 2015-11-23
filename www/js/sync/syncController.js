@@ -153,7 +153,7 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                         url: url,
                         dataType: 'json',
                         success: function (msg) {
-                            var response = JSON.parse(msg);
+                            var response = JSON.parse(msg);                            
                             if (response.status.toLowerCase() == 'ok') {
                                 model.updateTime = app.utils.getDateTimeNow();
                                 model.rooms = [];
@@ -170,21 +170,23 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                                         });
                                         var students = rooms[j].students;
                                         for (var k = 0; k < students.length; k++) {
-                                            var name = students[k].Name.split(' ').slice(1).join(' ').trim();                                            
-                                            contacts.push(new Contact({
-                                                "firstName": name.split(' ')[0],
-                                                "lastName": name.split(' ').slice(1).join(' ').trim(),
-                                                "class": data[i].className,
-                                                "classId": data[i].classId,
-                                                "roomId": rooms[j].roomId,
-                                                "pic": students[k].Pic,
-                                                "CID": students[k].CID,
-                                                "studentId": students[k].StudentId,
-                                                "company": "",
-                                                "phone": "", "email": "",
-                                                "city": "", "isFavorite": true,
-                                                "lat": 13.754595, "long": 100.602089
-                                            }));
+                                            if (students[k].Name.length > 0) {
+                                                var name = students[k].Name.split(' ').slice(1).join(' ').trim();
+                                                contacts.push(new Contact({
+                                                    "firstName": name.split(' ')[0],
+                                                    "lastName": name.split(' ').slice(1).join(' ').trim(),
+                                                    "class": data[i].className,
+                                                    "classId": data[i].classId,
+                                                    "roomId": rooms[j].roomId,
+                                                    "pic": students[k].Pic,
+                                                    "CID": students[k].CID,
+                                                    "studentId": students[k].StudentId,
+                                                    "company": "",
+                                                    "phone": "", "email": "",
+                                                    "city": "", "isFavorite": true,
+                                                    "lat": 13.754595, "long": 100.602089
+                                                }));
+                                            }
                                         }
                                     }
                                 }
@@ -200,6 +202,7 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                             }
                         },
                         error: function (error) {
+                            console.log(error)
                             app.f7.alert(error.statusText + ' โปรดติดต่อผู้ดูแลระบบ');
                             app.f7.pullToRefreshDone();
                         }
