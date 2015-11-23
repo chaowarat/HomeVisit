@@ -49,6 +49,7 @@
                 success: function (msg) {
                     app.f7.hideIndicator();
                     var response = JSON.parse(msg);
+                    localStorage.setItem("staff", response.data.StaffID);
                     localStorage.setItem("user", response.data.Name);
                     localStorage.setItem("host", response.data.HostID);
                     if (response.status.toLowerCase() == 'ok') {

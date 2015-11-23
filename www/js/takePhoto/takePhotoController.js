@@ -4,7 +4,11 @@
 		isNew: false
 	};
 	var isEdit = false;
-	var bindings = [];
+	var bindings = [{
+	    element: '.upload-img',
+	    event: 'click',
+	    handler: uploadImg
+	}];
 	var pictureSource, destinationType;
 	var cameraPopoverHandle, isTakePhoto = true, isHome = true;
 
@@ -29,7 +33,11 @@
 	        homePhotoCallback: homePhoto, homeLibraryCallback: homeLibrary,
 	        familyPhotoCallback: familyPhoto, familyLibraryCallback: familyLibrary
 	    });
-	}	
+	}
+
+	function uploadImg() {
+        // upload image
+	}
 
 	function getPhoto() {
 	    cameraPopoverHandle = navigator.camera.getPicture(onSuccess, onFail,
@@ -53,7 +61,7 @@
 
 	function takePhoto() {
 	    navigator.camera.getPicture(picOnSuccess, picOnFailure, {
-	        quality: 100,
+	        quality: 80,
 	        destinationType: Camera.DestinationType.FILE_URI,
 	        sourceType: Camera.PictureSourceType.CAMERA,
 	        correctOrientation: true
@@ -98,10 +106,3 @@
 	    onMapsApiLoaded: onMapsApiLoaded
 	};
 });
-
-function onMapsApiLoaded() {
-    require(['js/map/mapController'], function (mapCtrl) {
-        alert('loaded map');
-        mapCtrl.onMapsApiLoaded();
-    });
-}

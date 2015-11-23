@@ -54,7 +54,24 @@
                 });
                 var directionsService = new google.maps.DirectionsService;
                 directionsDisplay.setMap(map);
-                calculateAndDisplayRoute(directionsService, directionsDisplay, mapOptions.center, new google.maps.LatLng(contact.lat, contact.long));
+                var _destination = new google.maps.LatLng(13.759663, 100.501936); // bangkok;
+                if (contact.lat && contact.long) {                    
+                    _destination = new google.maps.LatLng(contact.lat, contact.long);
+                }
+                else {
+                    var buttons1 = [
+                        {
+                            text: 'ไม่พบพิกัดที่เลือก(ใช้ กทม. เป็นพิกัดอ้างอิง)',
+                            label: true
+                        },
+                        {
+                            text: 'ตกลง',
+                            bold: true
+                        }
+                    ];
+                    app.f7.actions(buttons1);
+                }
+                calculateAndDisplayRoute(directionsService, directionsDisplay, mapOptions.center, _destination);
             },
             function (error) {
                 app.f7.hideIndicator();
