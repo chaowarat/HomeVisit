@@ -53,54 +53,41 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
     function uploadAnswer(e) {
         e.target.style.display = 'none';
         e.target.nextElementSibling.style.display = '';
-        var classId = e.target.getAttribute('data-class');
-        var roomId = e.target.getAttribute('data-room');
         var CID = e.target.getAttribute('data-CID');
         var answerId = e.target.getAttribute('data-value');
-        var _data = {};
         var memo = JSON.parse(localStorage.getItem("memo"));
         if (!memo['0'] || !memo['1']) {
             return;
         }
-
         var _tmp = JSON.parse(localStorage.getItem("answer-" + answerId));
-        var answer = _.map(_tmp.answers, function (value) { var key = Object.keys(value)[0]; return { QID: key, AID: value[key] } });
+        var array = [];
+        var answer = _.map(_tmp.answers, function (value) { var key = Object.keys(value)[0]; return key + ':' + value[key] });
+        var postData = encodeURIComponent(JSON.stringify(answer));
+        var _url = 'http://newtestnew.azurewebsites.net/ServiceControl/service.svc/SaveRecord?Mode=0000&CID=' + CID;
+        _url += '&StaffId=' + localStorage.getItem('staff');
+        _url += '&HostId=' + localStorage.getItem('host');
+        _url += '&RecDate=' + _tmp.recordDate;
+        _url += '&SystemType=00001&src=02&Data=' + postData;
 
-        _data['USERNAME'] = app.utils.Base64.decode(memo['0']);
-        _data['PASSWORD'] = app.utils.Base64.decode(memo['1']);
-        _data['host'] = localStorage.getItem("host");
-        _data['year'] = (new Date()).getFullYear();
-        _data['CID'] = CID;
-        _data['class'] = classId;
-        _data['room'] = roomId;
-        _data['answers'] = answer;
-        _data['recordDate'] = _tmp.recordDate;
-
-        var tmp = encodeURIComponent(JSON.stringify(_data))
-        var _url = 'http://private-edu.azurewebsites.net/webservices/getservice.svc/saveDailyForm';
         Dom7.ajax({
             url: _url,
-            method: 'POST',
-            data: 'json=' + encodeURIComponent(JSON.stringify(_data)),
-            contentType: "application/x-www-form-urlencoded",          
+            method: 'GET',
+            dataType: "json",
+            crossDomain: true,
             success: function (msg) {
                 e.target.nextElementSibling.style.display = 'none';
                 e.target.innerText = '';
                 e.target.style.display = 'block';
-                var response = JSON.parse(JSON.parse(msg));
-                if (response['status'].toLocaleLowerCase() == 'ok') {
-                    localStorage.removeItem("answer-" + answerId);
-                    View.updateCountUnSync(countUnSync());
-                    var icon = document.createElement("i");
-                    icon.className = 'icon ion-checkmark';
-                    e.target.appendChild(icon);
-                    setTimeout(function () {
-                        e.target.parentElement.parentElement.parentElement.remove();
-                    }, 1000);
-                }
+                localStorage.removeItem("answer-" + answerId);
+                View.updateCountUnSync(countUnSync());
+                var icon = document.createElement("i");
+                icon.className = 'icon ion-checkmark';
+                e.target.appendChild(icon);
+                setTimeout(function () {
+                    e.target.parentElement.parentElement.parentElement.remove();
+                }, 1000);
             },
             error: function (error) {
-                console.log(error)
                 app.f7.alert(error.statusText + ' โปรดติดต่อผู้ดูแลระบบ');
                 app.f7.pullToRefreshDone();
             }
@@ -153,7 +140,7 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                         url: url,
                         dataType: 'json',
                         success: function (msg) {
-                            var response = JSON.parse(msg);
+                            var response = JSON.parse(msg);                            
                             if (response.status.toLowerCase() == 'ok') {
                                 model.updateTime = app.utils.getDateTimeNow();
                                 model.rooms = [];
@@ -170,21 +157,23 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                                         });
                                         var students = rooms[j].students;
                                         for (var k = 0; k < students.length; k++) {
-                                            var name = students[k].Name.split(' ').slice(1).join(' ').trim();                                            
-                                            contacts.push(new Contact({
-                                                "firstName": name.split(' ')[0],
-                                                "lastName": name.split(' ').slice(1).join(' ').trim(),
-                                                "class": data[i].className,
-                                                "classId": data[i].classId,
-                                                "roomId": rooms[j].roomId,
-                                                "pic": students[k].Pic,
-                                                "CID": students[k].CID,
-                                                "studentId": students[k].StudentId,
-                                                "company": "",
-                                                "phone": "", "email": "",
-                                                "city": "", "isFavorite": true,
-                                                "lat": 13.754595, "long": 100.602089
-                                            }));
+                                            if (students[k].Name.length > 0) {
+                                                var name = students[k].Name.split(' ').slice(1).join(' ').trim();
+                                                contacts.push(new Contact({
+                                                    "firstName": name.split(' ')[0],
+                                                    "lastName": name.split(' ').slice(1).join(' ').trim(),
+                                                    "class": data[i].className,
+                                                    "classId": data[i].classId,
+                                                    "roomId": rooms[j].roomId,
+                                                    "pic": students[k].Pic,
+                                                    "CID": students[k].CID,
+                                                    "studentId": students[k].StudentId,
+                                                    "company": "",
+                                                    "phone": "", "email": "",
+                                                    "city": "", "isFavorite": true,
+                                                    "lat": students[k].Lat, "long": students[k].Long
+                                                }));
+                                            }
                                         }
                                     }
                                 }
@@ -200,6 +189,7 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                             }
                         },
                         error: function (error) {
+                            console.log(error)
                             app.f7.alert(error.statusText + ' โปรดติดต่อผู้ดูแลระบบ');
                             app.f7.pullToRefreshDone();
                         }

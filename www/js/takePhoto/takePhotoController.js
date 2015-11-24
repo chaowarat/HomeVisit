@@ -36,8 +36,102 @@
 	}
 
 	function uploadImg() {
-        // upload image
+	    // upload image
+	    app.f7.showIndicator();
+	    uploadHomeImg();
 	}
+
+	function convertToDataURLviaCanvas(url, callback, outputFormat) {
+	    var img = new Image();
+	    //img.crossOrigin = 'Anonymous';
+	    img.onload = function () {
+	        var canvas = document.createElement('CANVAS');
+	        var ctx = canvas.getContext('2d');
+	        var dataURL;
+	        canvas.height = 600;
+	        canvas.width = 600;
+	        ctx.drawImage(this, 0, 0);
+	        dataURL = canvas.toDataURL(outputFormat);
+	        callback(dataURL);
+	        canvas = null;
+	    };
+	    img.src = url;
+	}
+
+	function uploadHomeImg() {	    
+	    var image = document.getElementById('imgHome');
+	    if (image.getAttribute('src').length <= 0) {
+	        app.f7.hideIndicator(); return;
+	    }
+	    convertToDataURLviaCanvas(image.getAttribute('src'), function (base64Img) {
+	        var memo = JSON.parse(localStorage.getItem("memo"));
+	        if (!memo['0'] || !memo['1']) {
+	            return;
+	        }
+	        var _data = {};
+	        _data['USERNAME'] = app.utils.Base64.decode(memo['0']);
+	        _data['PASSWORD'] = app.utils.Base64.decode(memo['1']);
+	        _data['fileName'] = contact.CID + 'home';
+	        _data['path'] = 'homevisit';
+	        _data['imgData'] = base64Img.split('base64,')[1];
+	        console.log('json=' + encodeURIComponent(JSON.stringify(_data)));
+	        var _url = 'http://private-edu.azurewebsites.net/webservices/getservice.svc/saveImage';
+	        Dom7.ajax({
+	            url: _url,
+	            method: 'POST',
+	            data: 'json=' + encodeURIComponent(JSON.stringify(_data)),
+	            contentType: "application/x-www-form-urlencoded",
+	            success: function (msg) {
+                    console.log('-----------------------------------------------------')
+                    _data = {};
+                    uploadFamilyImg();
+	            },
+	            error: function (error) {
+	                console.log(error);
+	                app.f7.hideIndicator();
+	                app.f7.alert(error.statusText + ' โปรดติดต่อผู้ดูแลระบบ');	                
+	            }
+	        });
+	    });
+	}
+
+	function uploadFamilyImg() {
+	    var image = document.getElementById('imgFamily');
+	    if (image.getAttribute('src').length <= 0) {
+	        app.f7.hideIndicator(); return;
+	    }
+	    convertToDataURLviaCanvas(image.getAttribute('src'), function (base64Img) {
+	        var memo = JSON.parse(localStorage.getItem("memo"));
+	        if (!memo['0'] || !memo['1']) {
+	            return;
+	        }
+	        var _data = {};
+	        _data['USERNAME'] = app.utils.Base64.decode(memo['0']);
+	        _data['PASSWORD'] = app.utils.Base64.decode(memo['1']);
+	        _data['fileName'] = contact.CID + 'family';
+	        _data['path'] = 'homevisit';
+	        _data['imgData'] = base64Img.split('base64,')[1];
+	        console.log('json=' + encodeURIComponent(JSON.stringify(_data)));
+	        var _url = 'http://private-edu.azurewebsites.net/webservices/getservice.svc/saveImage';
+	        Dom7.ajax({
+	            url: _url,
+	            method: 'POST',
+	            data: 'json=' + encodeURIComponent(JSON.stringify(_data)),
+	            contentType: "application/x-www-form-urlencoded",
+	            success: function (msg) {
+	                console.log('-----------------------------------------------------')
+	                _data = {};
+	                app.f7.hideIndicator();
+	            },
+	            error: function (error) {
+	                console.log(error);
+	                app.f7.hideIndicator();
+	                app.f7.alert(error.statusText + ' โปรดติดต่อผู้ดูแลระบบ');
+	            }
+	        });
+	    });
+	}
+
 
 	function getPhoto() {
 	    cameraPopoverHandle = navigator.camera.getPicture(onSuccess, onFail,
@@ -61,7 +155,7 @@
 
 	function takePhoto() {
 	    navigator.camera.getPicture(picOnSuccess, picOnFailure, {
-	        quality: 80,
+	        quality: 60,
 	        destinationType: Camera.DestinationType.FILE_URI,
 	        sourceType: Camera.PictureSourceType.CAMERA,
 	        correctOrientation: true
@@ -102,7 +196,6 @@
 	}
 
 	return {
-	    init: init,
-	    onMapsApiLoaded: onMapsApiLoaded
+	    init: init
 	};
 });

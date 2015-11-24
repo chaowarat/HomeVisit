@@ -23,6 +23,7 @@
             contact = new Contact({ isFavorite: query.isFavorite });
             state.isNew = true;
         }
+        console.log(contact)
         View.render({ model: contact, bindings: bindings });
         if (!app.isGetMap) {
             app.isGetMap = true;
