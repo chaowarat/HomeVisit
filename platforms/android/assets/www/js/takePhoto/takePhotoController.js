@@ -5,9 +5,14 @@
 	};
 	var isEdit = false;
 	var bindings = [{
-	    element: '.upload-img',
+	    element: '.button-home-upload',
 	    event: 'click',
-	    handler: uploadImg
+	    handler: uploadHomeImg
+	},
+	{
+	    element: '.button-family-upload',
+	    event: 'click',
+	    handler: uploadFamilyImg
 	}];
 	var pictureSource, destinationType;
 	var cameraPopoverHandle, isTakePhoto = true, isHome = true;
@@ -35,12 +40,6 @@
 	    });
 	}
 
-	function uploadImg() {
-	    // upload image
-	    app.f7.showIndicator();
-	    uploadHomeImg();
-	}
-
 	function convertToDataURLviaCanvas(url, callback, outputFormat) {
 	    var img = new Image();
 	    //img.crossOrigin = 'Anonymous';
@@ -48,9 +47,10 @@
 	        var canvas = document.createElement('CANVAS');
 	        var ctx = canvas.getContext('2d');
 	        var dataURL;
-	        canvas.height = 600;
-	        canvas.width = 600;
-	        ctx.drawImage(this, 0, 0);
+	        canvas.height = this.height;
+	        canvas.width = this.width;
+	        var ratio = this.height / 600;
+	        ctx.drawImage(this, 0, 0, this.width / ratio, this.height / ratio);
 	        dataURL = canvas.toDataURL(outputFormat);
 	        callback(dataURL);
 	        canvas = null;
@@ -58,7 +58,8 @@
 	    img.src = url;
 	}
 
-	function uploadHomeImg() {	    
+	function uploadHomeImg() {
+	    app.f7.showIndicator();
 	    var image = document.getElementById('imgHome');
 	    if (image.getAttribute('src').length <= 0) {
 	        app.f7.hideIndicator(); return;
@@ -66,28 +67,38 @@
 	    convertToDataURLviaCanvas(image.getAttribute('src'), function (base64Img) {
 	        var memo = JSON.parse(localStorage.getItem("memo"));
 	        if (!memo['0'] || !memo['1']) {
-	            return;
+	            app.f7.hideIndicator(); return;
 	        }
 	        var _data = {};
 	        _data['USERNAME'] = app.utils.Base64.decode(memo['0']);
 	        _data['PASSWORD'] = app.utils.Base64.decode(memo['1']);
 	        _data['fileName'] = contact.CID + 'home';
 	        _data['path'] = 'homevisit';
-	        _data['imgData'] = base64Img.split('base64,')[1];
-	        console.log('json=' + encodeURIComponent(JSON.stringify(_data)));
+	        _data['imgData'] = null;
+	        if (base64Img.indexOf('base64,') != -1) {
+	            _data['imgData'] = escape(base64Img.split('base64,')[1]);
+	        }
+	        console.log('home imag ' + 'json=' + encodeURIComponent(JSON.stringify(_data)));
 	        var _url = 'http://private-edu.azurewebsites.net/webservices/getservice.svc/saveImage';
 	        Dom7.ajax({
 	            url: _url,
 	            method: 'POST',
 	            data: 'json=' + encodeURIComponent(JSON.stringify(_data)),
 	            contentType: "application/x-www-form-urlencoded",
-	            success: function (msg) {
-                    console.log('-----------------------------------------------------')
-                    _data = {};
-                    uploadFamilyImg();
+	            success: function (msg) {                    
+	                _data = {};
+	                var response = JSON.parse(JSON.parse(msg));
+	                if (response.status.toLowerCase() == 'ok') {
+	                    app.f7.hideIndicator();
+	                    app.f7.alert('อัพโหลดรูปบ้านแล้ว', 'อัพโหลด');
+	                }
+	                else {
+	                    app.f7.hideIndicator();
+	                    console.log(msg);
+	                    app.f7.alert(response.errorMessage, 'ERROR');
+	                }
 	            },
 	            error: function (error) {
-	                console.log(error);
 	                app.f7.hideIndicator();
 	                app.f7.alert(error.statusText + ' โปรดติดต่อผู้ดูแลระบบ');	                
 	            }
@@ -96,6 +107,7 @@
 	}
 
 	function uploadFamilyImg() {
+	    app.f7.showIndicator();
 	    var image = document.getElementById('imgFamily');
 	    if (image.getAttribute('src').length <= 0) {
 	        app.f7.hideIndicator(); return;
@@ -103,28 +115,32 @@
 	    convertToDataURLviaCanvas(image.getAttribute('src'), function (base64Img) {
 	        var memo = JSON.parse(localStorage.getItem("memo"));
 	        if (!memo['0'] || !memo['1']) {
-	            return;
+	            app.f7.hideIndicator(); return;
 	        }
 	        var _data = {};
 	        _data['USERNAME'] = app.utils.Base64.decode(memo['0']);
 	        _data['PASSWORD'] = app.utils.Base64.decode(memo['1']);
 	        _data['fileName'] = contact.CID + 'family';
 	        _data['path'] = 'homevisit';
-	        _data['imgData'] = base64Img.split('base64,')[1];
 	        console.log('json=' + encodeURIComponent(JSON.stringify(_data)));
 	        var _url = 'http://private-edu.azurewebsites.net/webservices/getservice.svc/saveImage';
 	        Dom7.ajax({
 	            url: _url,
 	            method: 'POST',
-	            data: 'json=' + encodeURIComponent(JSON.stringify(_data)),
+	            data: 'json=' + encodeURIComponent(JSON.stringify(_data)) + ';imageData=' + encodeURIComponent(base64Img.split('base64,')[1]),
 	            contentType: "application/x-www-form-urlencoded",
 	            success: function (msg) {
-	                console.log('-----------------------------------------------------')
-	                _data = {};
-	                app.f7.hideIndicator();
+	                var response = JSON.parse(JSON.parse(msg));
+	                if (response.status.toLowerCase() == 'ok') {
+	                    app.f7.hideIndicator();
+	                    app.f7.alert('อัพโหลดรูปครอบครัวแล้ว', 'อัพโหลด');
+	                }
+	                else {
+	                    app.f7.hideIndicator();
+	                    app.f7.alert(response.errorMessage, 'ERROR');
+	                }
 	            },
 	            error: function (error) {
-	                console.log(error);
 	                app.f7.hideIndicator();
 	                app.f7.alert(error.statusText + ' โปรดติดต่อผู้ดูแลระบบ');
 	            }
