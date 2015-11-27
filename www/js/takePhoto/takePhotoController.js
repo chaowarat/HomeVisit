@@ -85,7 +85,7 @@
 	                var response = JSON.parse(JSON.parse(msg));
 	                if (response.status.toLowerCase() == 'ok') {
 	                    app.f7.hideIndicator();
-	                    app.f7.alert('อัพโหลดรูปครอบครัวแล้ว', 'อัพโหลด');
+	                    app.f7.alert('อัพโหลดรูปบ้านแล้ว', 'อัพโหลด');
 	                }
 	                else {
 	                    app.f7.hideIndicator();
