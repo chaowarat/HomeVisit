@@ -1,5 +1,6 @@
 ﻿define(["app", "js/contactModel", "js/PersonalDetail/PersonalDetailView"], function (app, Contact, View) {
-	var contact = null;
+    var contact = null;
+    var url = 'http://alphacase.azurewebsites.net/ServiceControl/CMJsonService.svc/';
 	var state = {
 		isNew: false
 	};
@@ -20,7 +21,26 @@
 	        contact = new Contact({ isFavorite: query.isFavorite });
 	        state.isNew = true;
 	    }
-	    View.render({ model: contact, bindings: bindings, data: null });
+	    app.f7.showIndicator();
+	    getDetail(contact.CID);	    
+	}
+
+	function getDetail(cid) {
+	    var _url = url + 'getShortProfile?CID=' + cid + '&Hosttype=02';
+	    Dom7.ajax({
+	        url: _url,
+	        method: 'GET',
+	        dataType: "json",
+	        crossDomain: true,
+	        success: function (msg) {
+	            app.f7.hideIndicator();
+	            View.render({ model: contact, bindings: bindings, data: JSON.parse(msg) });
+	        },
+	        error: function (error) {
+	            app.f7.hideIndicator();
+	            View.render({ model: contact, bindings: bindings, data: null });
+	        }
+	    });
 	}
 
 	function deleteContact() {
