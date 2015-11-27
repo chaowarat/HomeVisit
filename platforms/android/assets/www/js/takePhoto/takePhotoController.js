@@ -1,5 +1,6 @@
 ﻿define(["app", "js/contactModel", "js/takePhoto/takePhotoView"], function (app, Contact, View) {
-	var contact = null;
+    var contact = null;
+    var blobUrl = 'http://nuqlis.blob.core.windows.net/homevisit/';
 	var state = {
 		isNew: false
 	};
@@ -32,7 +33,9 @@
 	    else {
 	        contact = new Contact({ isFavorite: query.isFavorite });
 	        state.isNew = true;
-	    }	    
+	    }
+	    contact['imgHome'] = blobUrl + contact.CID + 'home';
+	    contact['imgFamily'] = blobUrl + contact.CID + 'family';
 	    View.render({
 	        model: contact, bindings: bindings,
 	        homePhotoCallback: homePhoto, homeLibraryCallback: homeLibrary,
@@ -85,7 +88,7 @@
 	                var response = JSON.parse(JSON.parse(msg));
 	                if (response.status.toLowerCase() == 'ok') {
 	                    app.f7.hideIndicator();
-	                    app.f7.alert('อัพโหลดรูปครอบครัวแล้ว', 'อัพโหลด');
+	                    app.f7.alert('อัพโหลดรูปบ้านแล้ว', 'อัพโหลด');
 	                }
 	                else {
 	                    app.f7.hideIndicator();

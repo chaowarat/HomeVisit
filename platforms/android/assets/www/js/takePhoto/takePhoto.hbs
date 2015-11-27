@@ -27,7 +27,7 @@
                         <div class="card-header">รูปบ้าน</div>
                         <div class="card-content">
                             <div class="card-content-inner" style="float: left;width:100%;height:228px;overflow: hidden;">
-                                <img id="imgHome" style="display: block;max-width: 90%;height: auto;" />
+                                <img id="imgHome" src="{{model.imgHome}}" onError="this.onerror=null;this.src='img/noimage.jpg';" style="display: block;max-width: 90%;height: auto;" />
                             </div>
                         </div>
                         <div class="card-footer">
@@ -45,7 +45,7 @@
                         <div class="card-header">รูปครอบครัว</div>
                         <div class="card-content">
                             <div class="card-content-inner" style="float: left;width:100%;height:228px;overflow: hidden;">
-                                <img id="imgFamily" style="display: block;max-width: 90%;height: auto;" />
+                                <img id="imgFamily" src="{{model.imgFamily}}" onError="this.onerror = null; this.src = 'img/noimage.jpg';" style="display: block;max-width: 90%;height: auto;" />
                             </div>
                         </div>
                         <div class="card-footer">
