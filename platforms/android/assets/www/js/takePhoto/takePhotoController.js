@@ -50,7 +50,7 @@
 	        canvas.height = this.height;
 	        canvas.width = this.width;
 	        var ratio = this.height / 600;
-	        ctx.drawImage(this, 0, 0, this.width / ratio, this.height / ratio);
+	        ctx.drawImage(this, 0, 0, this.width / ratio, this.height / ratio, 0, 0, this.width / ratio, this.height / ratio);
 	        dataURL = canvas.toDataURL(outputFormat);
 	        callback(dataURL);
 	        canvas = null;
@@ -74,33 +74,27 @@
 	        _data['PASSWORD'] = app.utils.Base64.decode(memo['1']);
 	        _data['fileName'] = contact.CID + 'home';
 	        _data['path'] = 'homevisit';
-	        _data['imgData'] = null;
-	        if (base64Img.indexOf('base64,') != -1) {
-	            _data['imgData'] = escape(base64Img.split('base64,')[1]);
-	        }
-	        console.log('home imag ' + 'json=' + encodeURIComponent(JSON.stringify(_data)));
+	        console.log('json=' + encodeURIComponent(JSON.stringify(_data)));
 	        var _url = 'http://private-edu.azurewebsites.net/webservices/getservice.svc/saveImage';
 	        Dom7.ajax({
 	            url: _url,
 	            method: 'POST',
-	            data: 'json=' + encodeURIComponent(JSON.stringify(_data)),
+	            data: 'json=' + encodeURIComponent(JSON.stringify(_data)) + ';imageData=' + encodeURIComponent(base64Img.split('base64,')[1]),
 	            contentType: "application/x-www-form-urlencoded",
-	            success: function (msg) {                    
-	                _data = {};
+	            success: function (msg) {
 	                var response = JSON.parse(JSON.parse(msg));
 	                if (response.status.toLowerCase() == 'ok') {
 	                    app.f7.hideIndicator();
-	                    app.f7.alert('อัพโหลดรูปบ้านแล้ว', 'อัพโหลด');
+	                    app.f7.alert('อัพโหลดรูปครอบครัวแล้ว', 'อัพโหลด');
 	                }
 	                else {
 	                    app.f7.hideIndicator();
-	                    console.log(msg);
 	                    app.f7.alert(response.errorMessage, 'ERROR');
 	                }
 	            },
 	            error: function (error) {
 	                app.f7.hideIndicator();
-	                app.f7.alert(error.statusText + ' โปรดติดต่อผู้ดูแลระบบ');	                
+	                app.f7.alert(error.statusText + ' โปรดติดต่อผู้ดูแลระบบ');
 	            }
 	        });
 	    });

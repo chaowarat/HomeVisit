@@ -50,7 +50,7 @@
 	        canvas.height = this.height;
 	        canvas.width = this.width;
 	        var ratio = this.height / 600;
-	        ctx.drawImage(this, 0, 0, this.width / ratio, this.height / ratio);
+	        ctx.drawImage(this, 0, 0, this.width / ratio, this.height / ratio, 0, 0, this.width / ratio, this.height / ratio);
 	        dataURL = canvas.toDataURL(outputFormat);
 	        callback(dataURL);
 	        canvas = null;
