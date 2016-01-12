@@ -34,8 +34,8 @@
 	        contact = new Contact({ isFavorite: query.isFavorite });
 	        state.isNew = true;
 	    }
-	    contact['imgHome'] = blobUrl + contact.CID + 'home';
-	    contact['imgFamily'] = blobUrl + contact.CID + 'family';
+	    contact['imgHome'] = blobUrl + contact.CID + 'home?' + (new Date().getTime());
+	    contact['imgFamily'] = blobUrl + contact.CID + 'family?' + (new Date().getTime());
 	    View.render({
 	        model: contact, bindings: bindings,
 	        homePhotoCallback: homePhoto, homeLibraryCallback: homeLibrary,
@@ -50,10 +50,10 @@
 	        var canvas = document.createElement('CANVAS');
 	        var ctx = canvas.getContext('2d');
 	        var dataURL;
-	        canvas.height = this.height;
-	        canvas.width = this.width;
 	        var ratio = this.height / 600;
-	        ctx.drawImage(this, 0, 0, this.width / ratio, this.height / ratio, 0, 0, this.width / ratio, this.height / ratio);
+	        canvas.height = this.height / ratio;
+	        canvas.width = this.width / ratio;
+	        ctx.drawImage(this, 0, 0, this.width, this.height, 0, 0, this.width / ratio, this.height / ratio);
 	        dataURL = canvas.toDataURL(outputFormat);
 	        callback(dataURL);
 	        canvas = null;

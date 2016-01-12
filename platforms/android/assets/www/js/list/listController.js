@@ -83,8 +83,8 @@
             menu.push({ id: (i + 1), text: rooms[i], value: rooms[i], icon: 'icon ion-clipboard' });
         }
         menu.push({ id: rooms.length + 1, text: 'จัดการข้อมูล', value: '' + (rooms.length + 1), icon: 'icon ion-loop', unSync: countUnSync() });
-        menu.push({ id: rooms.length + 2, text: 'ตั้งค่าแบบฟอร์ม', value: '' + (rooms.length + 2), icon: 'icon ion-settings' });
-        menu.push({ id: rooms.length + 3, text: 'ออกจากระบบ', value: '' + (rooms.length + 3), icon: 'icon ion-log-in' });
+        //menu.push({ id: rooms.length + 2, text: 'ตั้งค่าแบบฟอร์ม', value: '' + (rooms.length + 2), icon: 'icon ion-settings' });
+        menu.push({ id: rooms.length + 2, text: 'ออกจากระบบ', value: '' + (rooms.length + 2), icon: 'icon ion-log-in' });
     }
 
     function getRooms() {
@@ -126,10 +126,10 @@
                 localStorage.clear();
                 setTimeout(function () { app.f7.hideIndicator(); location.reload(); }, 1000);
             }
-            else if (value == menu.length - 2) { // formEdit
-                app.router.load('formTemplate');
-            }
-            else if (value == menu.length - 3) { // data management
+            //else if (value == menu.length - 2) { // formEdit
+            //    app.router.load('formTemplate');
+            //}
+            else if (value == menu.length - 2) { // data management
                 app.router.load('sync');
             }
             else { // room
