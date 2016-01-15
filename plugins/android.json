@@ -9,11 +9,11 @@
                 "parents": {
                     "/*": [
                         {
-                            "xml": "<feature name=\"Camera\"><param name=\"android-package\" value=\"org.apache.cordova.camera.CameraLauncher\" /></feature>",
+                            "xml": "<feature name=\"Whitelist\"><param name=\"android-package\" value=\"org.apache.cordova.whitelist.WhitelistPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"Whitelist\"><param name=\"android-package\" value=\"org.apache.cordova.whitelist.WhitelistPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "xml": "<feature name=\"Camera\"><param name=\"android-package\" value=\"org.apache.cordova.camera.CameraLauncher\" /></feature>",
                             "count": 1
                         }
                     ]
@@ -40,14 +40,14 @@
         }
     },
     "installed_plugins": {
-        "org.apache.cordova.camera": {
-            "PACKAGE_NAME": "com.my.app"
-        },
         "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "com.phonegap.helloworld"
+            "PACKAGE_NAME": "com.nuqlis.homevisit"
+        },
+        "org.apache.cordova.camera": {
+            "PACKAGE_NAME": "com.nuqlis.homevisit"
         },
         "org.apache.cordova.geolocation": {
-            "PACKAGE_NAME": "com.phonegap.helloworld"
+            "PACKAGE_NAME": "com.nuqlis.homevisit"
         }
     },
     "dependent_plugins": {}
