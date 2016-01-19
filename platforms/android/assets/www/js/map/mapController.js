@@ -23,8 +23,12 @@
             contact = new Contact({ isFavorite: query.isFavorite });
             state.isNew = true;
         }
-        console.log(contact)
         View.render({ model: contact, bindings: bindings });
+        if (!navigator.onLine) {
+            app.f7.hideIndicator();
+            app.f7.alert('ไม่สามารถเชื่อมต่ออินเตอร์เน็ตได้ โปรดตรวจสอบการตั้งค่า');
+            return;
+        }
         if (!app.isGetMap) {
             app.isGetMap = true;
             $.getScript('https://maps.googleapis.com/maps/api/js?v=3&?key=AIzaSyBDuskq2c_6ezrnB2W7Qa0FP6ykAooGxUc&sensor=false&language=th&callback=onMapsApiLoaded');
@@ -118,15 +122,15 @@
             destination.start_address = originText;
             destination.end_address = contact.firstName + ' ' + contact.lastName;
         }
-        if (destination.G != homeLatLong.G || destination.K != homeLatLong.K) {            
+        if (destination.lat() != homeLatLong.lat() || destination.lng() != homeLatLong.lng()) {
             var buttons = [
                 {
                     text: 'บันทึกตำแหน่งของที่อยู่ใหม่',
                     bold: true,
                     onClick: function () {
                         homeLatLong = destination;
-                        contact.lat = homeLatLong.G;
-                        contact.long = homeLatLong.K;
+                        contact.lat = homeLatLong.lat();
+                        contact.long = homeLatLong.lng();
                         var contacts = JSON.parse(localStorage.getItem("f7Contacts"));
                         for (var i = 0; i < contacts.length; i++) {
                             if (contacts[i].id == contact.id) {
@@ -169,7 +173,7 @@
                 directionsDisplay.setDirections(response);
             } else {
                 app.f7.hideIndicator();
-                alert('Directions request failed due to ' + status);
+                app.f7.alert('โปรดตรวจสอบการตั้งค่า GPS', 'ERROR! ไม่สามารถค้นหาเส้นทางได้ ' + status);
             }
         });
     }

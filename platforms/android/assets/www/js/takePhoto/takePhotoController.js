@@ -62,6 +62,10 @@
 	}
 
 	function uploadHomeImg() {
+	    if (!navigator.onLine) {
+	        app.f7.alert('ไม่สามารถเชื่อมต่ออินเตอร์เน็ตได้ โปรดตรวจสอบการตั้งค่า');
+	        return;
+	    }
 	    app.f7.showIndicator();
 	    var image = document.getElementById('imgHome');
 	    if (image.getAttribute('src').length <= 0) {
@@ -104,6 +108,10 @@
 	}
 
 	function uploadFamilyImg() {
+	    if (!navigator.onLine) {
+	        app.f7.alert('ไม่สามารถเชื่อมต่ออินเตอร์เน็ตได้ โปรดตรวจสอบการตั้งค่า');
+	        return;
+	    }
 	    app.f7.showIndicator();
 	    var image = document.getElementById('imgFamily');
 	    if (image.getAttribute('src').length <= 0) {

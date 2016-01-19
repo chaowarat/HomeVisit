@@ -44,13 +44,18 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
     }
 
     function uploadAllAnswer() {
-        var contacts = contactUnSync();
-        for (var i = 0; i < contacts.length; i++) {
-            document.getElementById(contacts[i].id).click();
-        }
+        [].forEach.call(document.getElementsByTagName('a'), function (el) {
+            if (el.innerText == 'อัพโหลด') {
+                uploadAnswer({ 'target': el });
+            }
+        });
     }
 
     function uploadAnswer(e) {
+        if (!navigator.onLine) {
+            app.f7.alert('ไม่สามารถเชื่อมต่ออินเตอร์เน็ตได้ โปรดตรวจสอบการตั้งค่า');
+            return;
+        }
         e.target.style.display = 'none';
         e.target.nextElementSibling.style.display = '';
         var CID = e.target.getAttribute('data-CID');

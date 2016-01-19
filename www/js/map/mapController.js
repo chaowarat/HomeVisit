@@ -24,6 +24,11 @@
             state.isNew = true;
         }
         View.render({ model: contact, bindings: bindings });
+        if (!navigator.onLine) {
+            app.f7.hideIndicator();
+            app.f7.alert('ไม่สามารถเชื่อมต่ออินเตอร์เน็ตได้ โปรดตรวจสอบการตั้งค่า');
+            return;
+        }
         if (!app.isGetMap) {
             app.isGetMap = true;
             $.getScript('https://maps.googleapis.com/maps/api/js?v=3&?key=AIzaSyBDuskq2c_6ezrnB2W7Qa0FP6ykAooGxUc&sensor=false&language=th&callback=onMapsApiLoaded');

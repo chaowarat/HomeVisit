@@ -22,6 +22,9 @@
 	        state.isNew = true;
 	    }
 	    app.f7.showIndicator();
+	    if (!navigator.onLine){
+	        app.f7.alert('ไม่สามารถเชื่อมต่ออินเตอร์เน็ตได้ โปรดตรวจสอบการตั้งค่า');
+	    }
 	    getDetail(contact.CID);	    
 	}
 
