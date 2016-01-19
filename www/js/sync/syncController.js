@@ -88,7 +88,7 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                 }, 1000);
             },
             error: function (error) {
-                app.f7.alert(error.statusText + ' โปรดติดต่อผู้ดูแลระบบ');
+                app.f7.alert('โปรดติดต่อผู้ดูแลระบบ', 'ERROR! ' + error.statusText);
                 app.f7.pullToRefreshDone();
             }
         });
