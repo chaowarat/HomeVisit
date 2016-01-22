@@ -8,6 +8,7 @@
     var routeIndex = 0, legIndex = 0;
     var originText = '';
     var homeLatLong = null, map, destination = null;
+    var geocoder;
 
     function init(query) {
         app.f7.showIndicator();
@@ -39,6 +40,7 @@
     }
 
     function onMapsApiLoaded() {
+        geocoder = new google.maps.Geocoder();
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
                 originText = 'ตำแหน่งปัจจุบัน';
@@ -62,21 +64,31 @@
                 var _destination = new google.maps.LatLng(13.759663, 100.501936); // bangkok;
                 if (contact.lat && contact.long) {                    
                     _destination = new google.maps.LatLng(contact.lat, contact.long);
+                    calculateAndDisplayRoute(directionsService, directionsDisplay, mapOptions.center, _destination);
                 }
                 else {
-                    var buttons1 = [
-                        {
-                            text: 'ไม่พบพิกัดที่เลือก(ใช้ กทม. เป็นพิกัดอ้างอิง)',
-                            label: true
-                        },
-                        {
-                            text: 'ตกลง',
-                            bold: true
-                        }
-                    ];
-                    app.f7.actions(buttons1);
-                }
-                calculateAndDisplayRoute(directionsService, directionsDisplay, mapOptions.center, _destination);
+                    var llFromAddr = addressToString(contact);
+                    if (llFromAddr.length > 0) {
+                        geocoder.geocode({ 'address': llFromAddr }, function (results, status) {
+                            _destination = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
+                            calculateAndDisplayRoute(directionsService, directionsDisplay, mapOptions.center, _destination);
+                        });
+                    }
+                    else {
+                        var buttons1 = [
+                            {
+                                text: 'ไม่พบพิกัดที่เลือก(ใช้ กทม. เป็นพิกัดอ้างอิง)',
+                                label: true
+                            },
+                            {
+                                text: 'ตกลง',
+                                bold: true
+                            }
+                        ];
+                        app.f7.actions(buttons1);
+                        calculateAndDisplayRoute(directionsService, directionsDisplay, mapOptions.center, _destination);
+                    }
+                }                
             },
             function (error) {
                 app.f7.hideIndicator();
@@ -90,6 +102,16 @@
         else {
             directionByDefault();
         }
+    }
+
+    function addressToString(contact) {
+        var result = '';
+        if (contact.villageName) result = contact.villageName;
+        if (contact.tumbonDescription) result += ' ต.' + contact.tumbonDescription;
+        if (contact.cityDescription) result += ' อ.' + contact.cityDescription;
+        if (contact.provinceDescription) result += ' จ.' + contact.provinceDescription;
+        if (contact.postCode) result += ' ' + contact.postCode;
+        return result;
     }
 
     function directionByDefault() {

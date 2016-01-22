@@ -16,7 +16,8 @@
 		this.company = values['company'] || '';
 		this.phone = values['phone'] || '';
 		this.email = values['email'] || '';
-		this.city = values['city'] || '';
+		this.cityId = values['cityId'] || '';
+		this.cityDescription = values['cityDescription'] || '';
 		this.lat = values['lat'] || null;
 		this.long = values['long'] || null;
 		this.addressId = values['addressId'] || '';

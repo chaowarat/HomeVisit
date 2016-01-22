@@ -179,7 +179,8 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                                                     "studentId": students[k].StudentId,
                                                     "company": "",
                                                     "phone": "", "email": "",
-                                                    "city": "", "isFavorite": true,
+                                                    "cityId": '',
+                                                    "cityDescription": '',
                                                     "lat": students[k].Lat, "long": students[k].Long,
                                                     "addressId" : '',
                                                     "houseNumber": '',
@@ -244,6 +245,8 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                     tmpContacts[tmpIndex].villageName = response.villageName;
                     tmpContacts[tmpIndex].tumbonId = response.tumbonId;
                     tmpContacts[tmpIndex].tumbonDescription = response.tumbonDescription;
+                    tmpContacts[tmpIndex].cityId = response.cityId;
+                    tmpContacts[tmpIndex].cityDescription = response.cityDescription;
                     tmpContacts[tmpIndex].provinceId = response.provinceId;
                     tmpContacts[tmpIndex].provinceDescription = response.provinceDescription;
                     tmpContacts[tmpIndex].postCode = response.postCode;
