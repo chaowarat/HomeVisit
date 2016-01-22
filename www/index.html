@@ -43,6 +43,98 @@
     </style>
 </head>
 <body>
+    <!-- address popover -->
+    <div class="popover popover-address" style="margin: -50px 0 0 -50px;width: 400px;overflow:auto">
+        <div class="popover-angle"></div>
+        <div class="popover-inner">
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <p>แก้ไขที่อยู่</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">บ้านเลขที่</div>
+                                <div class="item-input">
+                                    <input id="popover_houseNumber" type="text" placeholder="ตัวเลข">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">หมู่ที่</div>
+                                <div class="item-input">
+                                    <input id="popover_mooNumber" type="text" placeholder="ตัวเลข">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">จังหวัด</div>
+                                <div class="item-input">
+                                    <select>
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content">
+                        <div class="item-inner">
+                            <div class="item-title label">อำเภอ</div>
+                            <div class="item-input">
+                                <input type="text" placeholder="Fruit" id="popover_city">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content">
+                        <div class="item-inner">
+                            <div class="item-title label">ตำบล</div>
+                            <div class="item-input">
+                                <input type="text" placeholder="Fruit" id="popover_tumbon">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content">
+                        <div class="item-inner">
+                            <div class="item-title label">หมู่บ้าน</div>
+                            <div class="item-input">
+                                <input type="text" placeholder="Fruit" id="popover_village">
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">รหัสไปรษณีย์</div>
+                                <div class="item-input">
+                                    <input id="popover_postCode" type="text" placeholder="ตัวเลข">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <p class="buttons-row">
+                            <a href="#" class="button button-round close-popover">ยกเลิก</a>
+                            <a href="#" class="button button-round active save-address-buttom">ตกลง</a>
+                        </p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <!-- Statusbar overlay-->
     <div class="statusbar-overlay"></div>
     <!-- Panels Overlay -->

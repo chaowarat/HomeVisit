@@ -7,7 +7,7 @@ define(['app', 'js/contactModel', 'hbs!js/map/map'], function (app, Contact, dai
 	    var template = dailyForm({ model: params.model });
 		app.f7.popup(template);
 		bindEvents(params.bindings);
-		bindUIEvent();
+		bindUIEvent(params.saveAddressHandle);
 	}
 
 	function bindEvents(bindings) {
@@ -16,9 +16,19 @@ define(['app', 'js/contactModel', 'hbs!js/map/map'], function (app, Contact, dai
 		}
 	}
 
-	function bindUIEvent() {
+	function bindUIEvent(saveAddressHandle) {
 	    $('.close-map').on('click', function () {
 	        app.f7.closeModal('#mapModal');
+	    });
+	    $('.edit-address-link').on('click', function () {
+	        app.f7.popover('.popover-address', this);
+            $('#popover_houseNumber').val(contact.houseNumber);
+            $('#popover_mooNumber').val(contact.mooNumber);
+            $('#popover_postCode').val(contact.postCode);
+	    });
+	    $('.save-address-button').on('click', function () {
+	        saveAddressHandle($('#popover_houseNumber').val(), $('#popover_mooNumber').val(), $('#popover_postCode').val());
+	        app.f7.closeModal('.popover-address');
 	    });
 	}
 

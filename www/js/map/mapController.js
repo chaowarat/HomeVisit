@@ -24,7 +24,7 @@
             contact = new Contact({ isFavorite: query.isFavorite });
             state.isNew = true;
         }
-        View.render({ model: contact, bindings: bindings });
+        View.render({ model: contact, bindings: bindings, saveAddressHandle: saveAddress });
         if (!navigator.onLine) {
             app.f7.hideIndicator();
             app.f7.alert('ไม่สามารถเชื่อมต่ออินเตอร์เน็ตได้ โปรดตรวจสอบการตั้งค่า');
@@ -37,6 +37,11 @@
         else {
             onMapsApiLoaded();
         }
+    }
+
+    function saveAddress(houseNumber, mooNumber, provinceId, provinceDescription,
+        cityId, cityDescription, tumbonId, tumbonDescription, villageId, villageName, postCode) {
+        console.log(555);
     }
 
     function onMapsApiLoaded() {
