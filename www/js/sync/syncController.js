@@ -30,6 +30,9 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
 	}];
 
     var model = { 'updateTime': null, rooms: [] };
+    var tmpContacts = [];
+    var tmpIndex = 0;
+    var url = 'http://newtestnew.azurewebsites.net/ServiceControl/service.svc/';
 
     function init(query) {
         loadModel();        
@@ -68,7 +71,7 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
         var array = [];
         var answer = _.map(_tmp.answers, function (value) { var key = Object.keys(value)[0]; return key + ':' + value[key] });
         var postData = encodeURIComponent(JSON.stringify(answer));
-        var _url = 'http://newtestnew.azurewebsites.net/ServiceControl/service.svc/SaveRecord?Mode=0000&CID=' + CID;
+        var _url = url + 'SaveRecord?Mode=0000&CID=' + CID;
         _url += '&StaffId=' + localStorage.getItem('staff');
         _url += '&HostId=' + localStorage.getItem('host');
         _url += '&RecDate=' + _tmp.recordDate;
@@ -151,6 +154,7 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                                 model.rooms = [];
                                 var data = response.data;
                                 var contacts = [];
+                                tmpContacts = [];
                                 for (var i = 0; i < data.length; i++) {
                                     var rooms = data[i].rooms;
                                     for (var j = 0; j < rooms.length; j++) {
@@ -176,17 +180,29 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                                                     "company": "",
                                                     "phone": "", "email": "",
                                                     "city": "", "isFavorite": true,
-                                                    "lat": students[k].Lat, "long": students[k].Long
+                                                    "lat": students[k].Lat, "long": students[k].Long,
+                                                    "addressId" : '',
+                                                    "houseNumber": '',
+                                                    "mooNumber": '',
+                                                    "alley": '',
+                                                    "streetName": '',
+                                                    "villageId": '',
+                                                    "villageName": '',
+                                                    "tumbonId": '',
+                                                    "tumbonDescription": '',
+                                                    "provinceId": '',
+                                                    "provinceDescription": '',
+                                                    "postCode": '',
+                                                    "homeCode": ''
                                                 }));
                                             }
                                         }
                                     }
-                                }                                
+                                }
+                                tmpContacts = contacts.slice();
                                 localStorage.setItem("rooms", JSON.stringify(model));
-                                localStorage.setItem("f7Contacts", JSON.stringify(contacts));
-                                app.router.load('list');
-                                app.f7.pullToRefreshDone();
-                                View.render({ model: model, bindings: bindings, unSync: countUnSync(), contactUnSync: contactUnSync() });
+                                tmpIndex = 0;
+                                getAddress();                                
                             }
                             else {
                                 app.f7.alert(response.errorMessage);
@@ -205,6 +221,65 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                 app.f7.pullToRefreshDone();
             }
         );
+    }
+
+    function getAddress() {
+        var CID = tmpContacts[tmpIndex].CID;
+        var _url = url + 'getAddress?CID=' + CID + '&AddressType=002';
+
+        Dom7.ajax({
+            url: _url,
+            method: 'GET',
+            dataType: "json",
+            crossDomain: true,
+            success: function (msg) {                
+                var response = JSON.parse(msg);
+                if (response.status.toLowerCase() == 'ok') {
+                    tmpContacts[tmpIndex].addressId = response.addressID;
+                    tmpContacts[tmpIndex].houseNumber = response.houseNumber;
+                    tmpContacts[tmpIndex].mooNumber = response.mooNumber;
+                    tmpContacts[tmpIndex].alley = response.alley;
+                    tmpContacts[tmpIndex].streetName = response.streetName;
+                    tmpContacts[tmpIndex].villageId = response.villageId;
+                    tmpContacts[tmpIndex].villageName = response.villageName;
+                    tmpContacts[tmpIndex].tumbonId = response.tumbonId;
+                    tmpContacts[tmpIndex].tumbonDescription = response.tumbonDescription;
+                    tmpContacts[tmpIndex].provinceId = response.provinceId;
+                    tmpContacts[tmpIndex].provinceDescription = response.provinceDescription;
+                    tmpContacts[tmpIndex].postCode = response.postCode;
+                    tmpContacts[tmpIndex].homeCode = response.homeCode;
+                    tmpIndex++;
+                    if (tmpIndex < tmpContacts.length) {
+                        getAddress();
+                    }
+                    else {
+                        localStorage.setItem("f7Contacts", JSON.stringify(tmpContacts));
+                        tmpContacts = [];
+                        app.router.load('list');
+                        app.f7.pullToRefreshDone();
+                        View.render({ model: model, bindings: bindings, unSync: countUnSync(), contactUnSync: contactUnSync() });
+                    }
+                }
+                else {
+                    app.f7.alert('ไม่สามารถโหลดที่อยู่ของ ' + CID + ' ได้', 'ERROR! ' + response.errorMessage);
+                    localStorage.setItem("f7Contacts", JSON.stringify(tmpContacts));
+                    tmpContacts = [];
+                    app.router.load('list');
+                    app.f7.pullToRefreshDone();
+                    View.render({ model: model, bindings: bindings, unSync: countUnSync(), contactUnSync: contactUnSync() });
+                    return;
+                }
+            },
+            error: function (error) {
+                app.f7.alert('ไม่สามารถโหลดที่อยู่ของ ' + CID + ' ได้', ' SERVICE ERROR! ' + error.statusText);
+                localStorage.setItem("f7Contacts", JSON.stringify(tmpContacts));
+                tmpContacts = [];
+                app.router.load('list');
+                app.f7.pullToRefreshDone();
+                View.render({ model: model, bindings: bindings, unSync: countUnSync(), contactUnSync: contactUnSync() });
+                return;
+            }
+        });
     }
 
     function roomClick(e) {

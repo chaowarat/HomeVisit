@@ -19,6 +19,19 @@
 		this.city = values['city'] || '';
 		this.lat = values['lat'] || null;
 		this.long = values['long'] || null;
+		this.addressId = values['addressId'] || '';
+		this.houseNumber = values['houseNumber'] || '';
+		this.mooNumber = values['mooNumber'] || '';		
+		this.alley = values['alley'] || '';
+		this.streetName = values['streetName'] || '';
+		this.villageId = values['villageId'] || '';
+		this.villageName = values['villageName'] || '';
+		this.tumbonId = values['tumbonId'] || '';
+		this.tumbonDescription = values['tumbonDescription'] || '';
+		this.provinceId = values['provinceId'] || '';
+		this.provinceDescription = values['provinceDescription'] || '';
+		this.postCode = values['postCode'] || '';
+		this.homeCode = values['homeCode'] || '';
 		this.isFavorite = values['isFavorite'] || false;
     }
 
