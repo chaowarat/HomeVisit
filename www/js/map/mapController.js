@@ -41,7 +41,27 @@
 
     function saveAddress(houseNumber, mooNumber, provinceId, provinceDescription,
         cityId, cityDescription, tumbonId, tumbonDescription, villageId, villageName, postCode) {
-        console.log(555);
+        contact.houseNumber = houseNumber;
+        contact.mooNumber = mooNumber;
+        contact.provinceId = provinceId;
+        contact.provinceDescription = provinceDescription;
+        contact.cityId = cityId;
+        contact.cityDescription = cityDescription;
+        contact.tumbonId = tumbonId;
+        contact.tumbonDescription = tumbonDescription;
+        contact.villageId = villageId;
+        contact.villageName = villageName;
+        contact.postCode = postCode;
+        contact.lat = null;
+        contact.long = null;
+        var contacts = JSON.parse(localStorage.getItem("f7Contacts"));
+        for (var i = 0; i < contacts.length; i++) {
+            if (contacts[i].id == contact.id) {
+                contacts[i] = contact;
+            }
+        }
+        localStorage.setItem("f7Contacts", JSON.stringify(contacts));
+        onMapsApiLoaded();
     }
 
     function onMapsApiLoaded() {

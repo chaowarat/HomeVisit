@@ -76,7 +76,6 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
         _url += '&HostId=' + localStorage.getItem('host');
         _url += '&RecDate=' + _tmp.recordDate;
         _url += '&SystemType=00001&src=02&Data=' + postData;
-
         Dom7.ajax({
             url: _url,
             method: 'GET',
