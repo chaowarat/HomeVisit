@@ -25,6 +25,18 @@ define(function() {
 	    return keys;
 	}
 
+	function getEditAddress() {
+	    var result = [];
+	    var contacts = JSON.parse(localStorage.getItem("f7Contacts"));
+	    if (!contacts) return result;
+	    for (var i = 0; i < contacts.length; i++) {
+	        if (contacts[i].isEdit == true) {
+	            result.push(contacts[i]);
+	        }
+	    }
+	    return result;
+	}
+
 	function getAnswers(date, personId) {
 	    var answerStartWith = 'answer';
 	    var keys = getStorageKeys();
@@ -109,6 +121,7 @@ define(function() {
 		getDateTimeNow: getDateTimeNow,
 		getAnswers: getAnswers,
 		Base64: Base64,
-		insertAnswer: insertAnswer
+		insertAnswer: insertAnswer,
+		getEditAddress: getEditAddress
 	};
 });

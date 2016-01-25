@@ -36,7 +36,7 @@
     }
 
     function countUnSync() {
-        return app.utils.getAnswers().length;
+        return app.utils.getEditAddress().length + app.utils.getAnswers().length;
     }
 
     function login(user, pass) {

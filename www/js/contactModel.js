@@ -33,6 +33,7 @@
 		this.provinceDescription = values['provinceDescription'] || '';
 		this.postCode = values['postCode'] || '';
 		this.homeCode = values['homeCode'] || '';
+		this.isEdit = values['isEdit'] || false;
 		this.isFavorite = values['isFavorite'] || false;
     }
 

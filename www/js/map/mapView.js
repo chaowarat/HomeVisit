@@ -23,12 +23,121 @@ define(['app', 'js/contactModel', 'hbs!js/map/map'], function (app, Contact, dai
 	    $('.edit-address-link').on('click', function () {
 	        app.f7.popover('.popover-address', this);
             $('#popover_houseNumber').val(contact.houseNumber);
-            $('#popover_mooNumber').val(contact.mooNumber);
-            $('#popover_province option[value="' + contact.provinceId + '"]').attr('selected', 'selected');
-            $('#popover_city option[value="' + contact.cityId + '"]').attr('selected', 'selected');
-            $('#popover_tumbon option[value="' + contact.tumbonId + '"]').attr('selected', 'selected');
-            $('#popover_village option[value="' + contact.villageId + '"]').attr('selected', 'selected');
+            $('#popover_mooNumber').val(contact.mooNumber);            
             $('#popover_postCode').val(contact.postCode);
+
+            if ($('#popover_province').html().length > 0) return;
+            $.ajax({
+                type: "GET",
+                url: "js/thailand/provinces.js",
+                dataType: "json",
+                success: function (data) {
+                    data.sort(function (a, b) {
+                        return a.text.localeCompare(b.text);
+                    });
+                    var ddl = $('#popover_province');
+                    for (var i = 0; i < data.length; i++) {
+                        var option = '<option value="' + data[i].id + '">' + data[i].text + '</option>';
+                        ddl.append(option);
+                    }
+
+                    $('#popover_province').off('change').on('change', function (e) {
+                        var e = document.getElementById("popover_province");
+                        var selectedProvince = e.options[e.selectedIndex].value;
+                        $.ajax({
+                            type: "GET",
+                            url: "js/thailand/cities.js",
+                            dataType: "json",
+                            success: function (data) {                                
+                                var ddl = $('#popover_city');
+                                ddl.html('');
+                                data = data.filter(function (el) {
+                                    return el.provinceId == selectedProvince;
+                                });
+                                data.sort(function (a, b) {
+                                    return a.text.localeCompare(b.text);
+                                });
+                                for (var i = 0; i < data.length; i++) {
+                                    var option = '<option value="' + data[i].id + '">' + data[i].text + '</option>';
+                                    ddl.append(option);
+                                }
+
+                                ddl.off('change').on('change', function (e) {
+                                    var e = document.getElementById("popover_city");
+                                    var selectedCity = e.options[e.selectedIndex].value;
+                                    $.ajax({
+                                        type: "GET",
+                                        url: "js/thailand/tumbons.js",
+                                        dataType: "json",
+                                        success: function (data) {
+                                            var ddl = $('#popover_tumbon');
+                                            ddl.html('');
+                                            data = data.filter(function (el) {
+                                                return el.cityId == selectedCity;
+                                            });
+                                            data.sort(function (a, b) {
+                                                return a.text.localeCompare(b.text);
+                                            });
+                                            for (var i = 0; i < data.length; i++) {
+                                                var option = '<option value="' + data[i].id + '">' + data[i].text + '</option>';
+                                                ddl.append(option);
+                                            }
+
+                                            ddl.off('change').on('change', function (e) {
+                                                var e = document.getElementById("popover_tumbon");
+                                                var selectedTumbon = e.options[e.selectedIndex].value;
+                                                $.ajax({
+                                                    type: "GET",
+                                                    url: "js/thailand/villages.js",
+                                                    dataType: "json",
+                                                    success: function (data) {
+                                                        var ddl = $('#popover_village');
+                                                        ddl.html('');
+                                                        data = data.filter(function (el) {
+                                                            return el.tumbonId == selectedTumbon;
+                                                        });
+                                                        data.sort(function (a, b) {
+                                                            return a.text.localeCompare(b.text);
+                                                        });
+                                                        for (var i = 0; i < data.length; i++) {
+                                                            var option = '<option value="' + data[i].id + '">' + data[i].text + '</option>';
+                                                            ddl.append(option);
+                                                        }
+                                                        $('#popover_village option[value="' + contact.villageId + '"]').attr('selected', 'selected');
+                                                    },
+                                                    error: function (e) {
+                                                        alert('ไม่สามารถโหลดรายชื่อหมู่บ้านได้');
+                                                        console.log(e);
+                                                    }
+                                                });
+                                            });
+                                            $('#popover_tumbon option[value="' + contact.tumbonId + '"]').attr('selected', 'selected');
+                                            ddl.trigger("change");
+                                        },
+                                        error: function (e) {
+                                            alert('ไม่สามารถโหลดรายชื่อตำบลได้');
+                                            console.log(e);
+                                        }
+                                    });
+                                });
+                                $('#popover_city option[value="' + contact.cityId + '"]').attr('selected', 'selected');
+                                ddl.trigger("change");
+                            },
+                            error: function (e) {
+                                alert('ไม่สามารถโหลดรายชื่ออำเภอได้');
+                                console.log(e);
+                            }
+                        });
+                    });
+                    $('#popover_province option[value="' + contact.provinceId + '"]').attr('selected', 'selected');
+                    ddl.trigger("change");
+
+                },
+                error: function (e) {
+                    alert('ไม่สามารถโหลดรายชื่อจังหวัดได้');
+                    console.log(e);
+                }
+            });
 	    });
 	    $('.save-address-button').on('click', function () {
 	        var buttons = [
@@ -46,8 +155,12 @@ define(['app', 'js/contactModel', 'hbs!js/map/map'], function (app, Contact, dai
                         var selectedTumbon = e.options[e.selectedIndex].value;
                         var selectedTumbonText = e.options[e.selectedIndex].text;
                         e = document.getElementById("popover_village");
-                        var selectedVillage = e.options[e.selectedIndex].value;
-                        var selectedVillageText = e.options[e.selectedIndex].text;
+                        var selectedVillage = '';
+                        var selectedVillageText = '';
+                        if (e.selectedIndex > 0) {
+                            var selectedVillage = e.options[e.selectedIndex].value;
+                            var selectedVillageText = e.options[e.selectedIndex].text;
+                        }                        
                         saveAddressHandle(
                             $('#popover_houseNumber').val(), $('#popover_mooNumber').val(),
                             selectedProvince, selectedProvinceText, selectedCity, selectedText,

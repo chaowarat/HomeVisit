@@ -24,6 +24,10 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
 	    event: 'click',
 	    handler: uploadAnswer
 	}, {
+	    element: '.upload-address',
+	    event: 'click',
+	    handler: uploadAddress
+	}, , {
 	    element: '.upload-all',
 	    event: 'click',
 	    handler: uploadAllAnswer
@@ -35,23 +39,98 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
     var url = 'http://newtestnew.azurewebsites.net/ServiceControl/service.svc/';
 
     function init(query) {
-        loadModel();        
-        View.render({ model: model, bindings: bindings, unSync: countUnSync(), contactUnSync: contactUnSync()});
+        loadModel();
+        var tmp = false;
+        if(countUnSync() > 0) tmp = true;
+        View.render({ model: model, bindings: bindings, unSync: countUnSync(), contactUnSync: contactUnSync(), addressUnSync: app.utils.getEditAddress(), haveItems: tmp });
     }
 
     /////////////////////////////////////////////////////////////////////////////
     ////// function for notification tab
     /////////////////////////////////////////////////////////////////////////////
     function countUnSync() {
-        return app.utils.getAnswers().length;
+        return app.utils.getEditAddress().length + app.utils.getAnswers().length;
     }
 
     function uploadAllAnswer() {
         [].forEach.call(document.getElementsByTagName('a'), function (el) {
-            if (el.innerText == 'อัพโหลด') {
-                uploadAnswer({ 'target': el });
+            if (el.getAttribute('id')) {
+                if (el.getAttribute('id').indexOf('upload_') != -1 && el.innerText == 'อัพโหลด') {
+                    uploadAnswer({ 'target': el });
+                }
+                else if (el.getAttribute('id').indexOf('address_') != -1 && el.innerText == 'อัพโหลด') {
+                    uploadAddress({ 'target': el });
+                }
             }
         });
+    }
+
+    function uploadAddress(e) {
+        if (!navigator.onLine) {
+            app.f7.alert('ไม่สามารถเชื่อมต่ออินเตอร์เน็ตได้ โปรดตรวจสอบการตั้งค่า');
+            return;
+        }
+        e.target.style.display = 'none';
+        e.target.nextElementSibling.style.display = '';
+        var id = e.target.getAttribute('data-value');
+        var contacts = JSON.parse(localStorage.getItem("f7Contacts"));
+        var contact = null;
+        for (var i = 0; i < contacts.length; i++) {
+            if (contacts[i].id == id) {
+                contact = contacts[i]; break;
+            }
+        }
+        if (contact) {
+            var memo = JSON.parse(localStorage.getItem("memo"));
+            if (!memo['0'] || !memo['1']) {
+                return;
+            }
+            var _lat = '';
+            if (contact.lat) _lat = contact.lat;
+            var _lng = '';
+            if (contact.long) _lng = contact.long;
+            var _url = url + 'setAddress?AddressID=' + contact.addressId;
+            _url += '&CID=' + contact.CID + '&HouseNumber=' + contact.houseNumber + '&MooNumber=' + contact.mooNumber;
+            _url += '&VillageID=' + contact.villageId + '&Alley=&StreetName=';
+            _url += '&TumbonID=' + contact.tumbonId + '&CityID=' + contact.cityId + '&ProvinceID=' + contact.provinceId;
+            _url += '&PostCode=' + contact.postCode + '&HomeCode=' + contact.homeCode + '&Lat=' + _lat + '&Long=' + _lng;
+            Dom7.ajax({
+                url: _url,
+                method: 'GET',
+                dataType: "json",
+                crossDomain: true,
+                success: function (msg) {
+                    e.target.nextElementSibling.style.display = 'none';
+                    e.target.innerText = '';
+                    e.target.style.display = 'block';
+
+                    var response = JSON.parse(msg);
+                    if (response.status.toLowerCase() == 'ok') {
+                        if (response.newAddressId.length > 0) {
+                            contact.addressId = response.newAddressId;
+                        }
+                        contact.isEdit = false;
+                        for (var i = 0; i < contacts.length; i++) {
+                            if (contacts[i].id == id) {
+                                contacts[i] = contact; break;
+                            }
+                        }
+                    }
+                    localStorage.setItem("f7Contacts", JSON.stringify(contacts));
+                    View.updateCountUnSync(countUnSync());
+                    var icon = document.createElement("i");
+                    icon.className = 'icon ion-checkmark';
+                    e.target.appendChild(icon);
+                    setTimeout(function () {
+                        e.target.parentElement.parentElement.parentElement.remove();
+                    }, 1000);
+                },
+                error: function (error) {
+                    app.f7.alert('โปรดติดต่อผู้ดูแลระบบ', 'ERROR! ' + error.statusText);
+                    app.f7.pullToRefreshDone();
+                }
+            });
+        }
     }
 
     function uploadAnswer(e) {

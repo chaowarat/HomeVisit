@@ -54,6 +54,7 @@
         contact.postCode = postCode;
         contact.lat = null;
         contact.long = null;
+        contact.isEdit = true;
         var contacts = JSON.parse(localStorage.getItem("f7Contacts"));
         for (var i = 0; i < contacts.length; i++) {
             if (contacts[i].id == contact.id) {
@@ -135,7 +136,7 @@
         if (contact.tumbonDescription) result += ' ต.' + contact.tumbonDescription;
         if (contact.cityDescription) result += ' อ.' + contact.cityDescription;
         if (contact.provinceDescription) result += ' จ.' + contact.provinceDescription;
-        if (contact.postCode) result += ' ' + contact.postCode;
+        //if (contact.postCode) result += ' ' + contact.postCode;
         return result;
     }
 
@@ -178,6 +179,7 @@
                         homeLatLong = destination;
                         contact.lat = homeLatLong.lat();
                         contact.long = homeLatLong.lng();
+                        contact.isEdit = true;
                         var contacts = JSON.parse(localStorage.getItem("f7Contacts"));
                         for (var i = 0; i < contacts.length; i++) {
                             if (contacts[i].id == contact.id) {
@@ -213,6 +215,17 @@
                 if (originText != '') {
                     response.routes[0].legs[0].start_address = originText;
                     response.routes[0].legs[0].end_address = contact.firstName + ' ' + contact.lastName;
+
+                    contact.lat = homeLatLong.lat();
+                    contact.long = homeLatLong.lng();
+                    contact.isEdit = true;
+                    var contacts = JSON.parse(localStorage.getItem("f7Contacts"));
+                    for (var i = 0; i < contacts.length; i++) {
+                        if (contacts[i].id == contact.id) {
+                            contacts[i] = contact;
+                        }
+                    }
+                    localStorage.setItem("f7Contacts", JSON.stringify(contacts));
                 }
                 var tmp = response.routes[routeIndex].legs[legIndex];
                 View.setHeader(tmp.distance.text.replace(' km', 'กม.'), tmp.duration.text.replace(' hours ', '.').replace(' mins', 'ชม'));
