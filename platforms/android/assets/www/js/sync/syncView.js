@@ -7,8 +7,8 @@ define(['app', 'hbs!js/sync/sync', 'hbs!js/sync/roomPanel', 'hbs!js/sync/rightPa
 	        removeEvents(params.bindings);
 	        $('.sync-content').html(template);	        
 	    }
-	    else { // load new	        
-	        var template = newForm({ contactUnSync: params.contactUnSync });
+	    else { // load new	   
+	        var template = newForm({ haveItems: params.haveItems, contactUnSync: params.contactUnSync, addressUnSync: params.addressUnSync });
 	        app.f7.popup(template);
 	        $('.sync-content').html(room({ model: params.model.rooms }));
 	    }

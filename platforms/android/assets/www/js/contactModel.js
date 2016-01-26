@@ -16,9 +16,24 @@
 		this.company = values['company'] || '';
 		this.phone = values['phone'] || '';
 		this.email = values['email'] || '';
-		this.city = values['city'] || '';
+		this.cityId = values['cityId'] || '';
+		this.cityDescription = values['cityDescription'] || '';
 		this.lat = values['lat'] || null;
 		this.long = values['long'] || null;
+		this.addressId = values['addressId'] || '';
+		this.houseNumber = values['houseNumber'] || '';
+		this.mooNumber = values['mooNumber'] || '';		
+		this.alley = values['alley'] || '';
+		this.streetName = values['streetName'] || '';
+		this.villageId = values['villageId'] || '';
+		this.villageName = values['villageName'] || '';
+		this.tumbonId = values['tumbonId'] || '';
+		this.tumbonDescription = values['tumbonDescription'] || '';
+		this.provinceId = values['provinceId'] || '';
+		this.provinceDescription = values['provinceDescription'] || '';
+		this.postCode = values['postCode'] || '';
+		this.homeCode = values['homeCode'] || '';
+		this.isEdit = values['isEdit'] || false;
 		this.isFavorite = values['isFavorite'] || false;
     }
 

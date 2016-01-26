@@ -17,6 +17,7 @@
 	}];
 	var pictureSource, destinationType;
 	var cameraPopoverHandle, isTakePhoto = true, isHome = true;
+	var urlEdu = 'http://private-edu.azurewebsites.net/webservices/getservice.svc/';
 
 	function init(query) {
 	    pictureSource = navigator.camera.PictureSourceType;
@@ -34,8 +35,8 @@
 	        contact = new Contact({ isFavorite: query.isFavorite });
 	        state.isNew = true;
 	    }
-	    contact['imgHome'] = blobUrl + contact.CID + 'home?' + (new Date().getTime());
-	    contact['imgFamily'] = blobUrl + contact.CID + 'family?' + (new Date().getTime());
+	    contact['imgHome'] = blobUrl + contact.CID + 'home' + (new Date()).getFullYear() + '?' + (new Date().getTime());
+	    contact['imgFamily'] = blobUrl + contact.CID + 'family' + (new Date()).getFullYear() + '?' + (new Date().getTime());
 	    View.render({
 	        model: contact, bindings: bindings,
 	        homePhotoCallback: homePhoto, homeLibraryCallback: homeLibrary,
@@ -82,7 +83,7 @@
 	        _data['fileName'] = contact.CID + 'home';
 	        _data['path'] = 'homevisit';
 	        console.log('json=' + encodeURIComponent(JSON.stringify(_data)));
-	        var _url = 'http://private-edu.azurewebsites.net/webservices/getservice.svc/saveImage';
+	        var _url = urlEdu + 'saveImage';
 	        Dom7.ajax({
 	            url: _url,
 	            method: 'POST',
@@ -128,7 +129,7 @@
 	        _data['fileName'] = contact.CID + 'family';
 	        _data['path'] = 'homevisit';
 	        console.log('json=' + encodeURIComponent(JSON.stringify(_data)));
-	        var _url = 'http://private-edu.azurewebsites.net/webservices/getservice.svc/saveImage';
+	        var _url = urlEdu + 'saveImage';
 	        Dom7.ajax({
 	            url: _url,
 	            method: 'POST',
@@ -152,8 +153,7 @@
 	        });
 	    });
 	}
-
-
+    
 	function getPhoto() {
 	    cameraPopoverHandle = navigator.camera.getPicture(onSuccess, onFail,
          {

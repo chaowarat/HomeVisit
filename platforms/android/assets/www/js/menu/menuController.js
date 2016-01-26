@@ -4,7 +4,11 @@
         isNew: false
     };
     var isEdit = false;
-    var bindings = [];
+    var bindings = [{
+        element: '.navbar-inner .left .back.link',
+        event: 'click',
+        handler: backClick
+    }];
 
     function init(query) {
         app.f7.showIndicator();
@@ -29,6 +33,11 @@
 
     function infoClick() {
         app.router.load('PersonalDetail', { id: contact.id });
+    }
+
+    function backClick() {
+        app.router.load('list');
+        closePage();
     }
 
     function closePage() {

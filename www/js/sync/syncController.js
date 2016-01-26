@@ -37,6 +37,8 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
     var tmpContacts = [];
     var tmpIndex = 0;
     var url = 'http://newtestnew.azurewebsites.net/ServiceControl/service.svc/';
+    var urlEdu = 'http://private-edu.azurewebsites.net/webservices/getservice.svc/';
+    //var urlEdu = 'http://localhost:36677/webservices/getservice.svc/';
 
     function init(query) {
         loadModel();
@@ -165,17 +167,78 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                 e.target.innerText = '';
                 e.target.style.display = 'block';
                 localStorage.removeItem("answer-" + answerId);
-                View.updateCountUnSync(countUnSync());
-                var icon = document.createElement("i");
-                icon.className = 'icon ion-checkmark';
-                e.target.appendChild(icon);
-                setTimeout(function () {
-                    e.target.parentElement.parentElement.parentElement.remove();
-                }, 1000);
+
+                saveQImage("001", e, CID);
             },
             error: function (error) {
                 app.f7.alert('โปรดติดต่อผู้ดูแลระบบ', 'ERROR! ' + error.statusText);
                 app.f7.pullToRefreshDone();
+            }
+        });
+    }
+
+    function saveQImage(imageType, e, CID) {        
+        if (!imageType) {
+            View.updateCountUnSync(countUnSync());
+            var icon = document.createElement("i");
+            icon.className = 'icon ion-checkmark';
+            e.target.appendChild(icon);
+            setTimeout(function () {
+                e.target.parentElement.parentElement.parentElement.remove();
+            }, 1000);
+            return;
+        };
+        
+        var memo = JSON.parse(localStorage.getItem("memo"));
+        if (!memo['0'] || !memo['1']) {
+            View.updateCountUnSync(countUnSync());
+            var icon = document.createElement("i");
+            icon.className = 'icon ion-checkmark';
+            e.target.appendChild(icon);
+            setTimeout(function () {
+                e.target.parentElement.parentElement.parentElement.remove();
+            }, 1000);
+            return;
+        }
+        var _data = {};
+        _data['USERNAME'] = app.utils.Base64.decode(memo['0']);
+        _data['PASSWORD'] = app.utils.Base64.decode(memo['1']);
+        _data['CID'] = CID;
+        _data['staffId'] = localStorage.getItem('staff');
+        _data['hostId'] = localStorage.getItem('host');
+        _data['imageType'] = imageType;
+        _data['url'] = '';
+        if (imageType == '001') {
+            _data['url'] = 'https://nuqlis.blob.core.windows.net/homevisit/' + CID + 'home' + (new Date()).getFullYear();
+        }
+        else if (imageType == '002') {
+            _data['url'] = 'https://nuqlis.blob.core.windows.net/homevisit/' + CID + 'family' + (new Date()).getFullYear();
+        }
+        var _url = urlEdu + 'saveQImage';
+        Dom7.ajax({
+            url: _url,
+            method: 'POST',
+            data: 'json=' + encodeURIComponent(JSON.stringify(_data)),
+            contentType: "application/x-www-form-urlencoded",
+            success: function (msg) {                
+                var response = JSON.parse(JSON.parse(msg));
+                if (response.status.toLowerCase() == 'ok') {
+                    if (imageType == '001') {
+                        imageType = '002';
+                        saveQImage(imageType, e, CID);
+                    }
+                    else {
+                        saveQImage(null, e, CID);
+                    }
+                }
+                else {
+                    app.f7.hideIndicator();
+                    app.f7.alert('โปรดติดต่อผู้ดูแลระบบ', 'SERVER ERROR! ' + response.errorMessage);
+                }
+            },
+            error: function (error) {
+                app.f7.hideIndicator();
+                app.f7.alert('โปรดติดต่อผู้ดูแลระบบ', 'ERROR! ' + error.statusText);
             }
         });
     }
@@ -221,7 +284,7 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                     if (!memo['0'] || !memo['1']) {
                         return;
                     }
-                    var url = 'http://private-edu.azurewebsites.net/webservices/getservice.svc/getStudents?USERNAME=' + app.utils.Base64.decode(memo['0']) + '&PASSWORD=' + app.utils.Base64.decode(memo['1']) + '&YEAR=' + (new Date()).getFullYear();
+                    var url = urlEdu + 'getStudents?USERNAME=' + app.utils.Base64.decode(memo['0']) + '&PASSWORD=' + app.utils.Base64.decode(memo['1']) + '&YEAR=' + (new Date()).getFullYear();
                     Dom7.ajax({
                         url: url,
                         dataType: 'json',

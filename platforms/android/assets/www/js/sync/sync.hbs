@@ -46,7 +46,7 @@
         <!-- Tab 2 -->
         <div id="tab2" class="tab">
           <div class="content-block">
-            {{#if contactUnSync}}
+            {{#if haveItems}}
             <div class="content-block-title">ข้อมูลที่ยังไม่ได้ส่งเข้าระบบ</div>
             <div class="list-block unSync-list">
               <div class="list-group unSync-list">
@@ -75,12 +75,25 @@
                     </div>
                   </li>
                   {{/each}}
+                  {{#each addressUnSync}}
+                  <li class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">{{firstName}} {{lastName}}(แก้ไขที่อยู่)</div>
+                      </div>
+                      <div class="item-subtitle">
+                          <a id="address_{{id}}" href="#" class="item-link list-button upload-address" style="color:#29B6F6" data-value="{{id}}">อัพโหลด</a>
+                          <span class="preloader" style="display:none; padding:7px;margin-top: 5px;"></span>
+                      </div>
+                    </div>
+                  </li>
+                  {{/each}}
 
                 </ul>
               </div>
             </div>
             {{/if}}
-            {{#unless contactUnSync}}
+            {{#unless haveItems}}
             <div class="content-block-title">ไม่พบข้อมูลที่ยังไม่ได้ส่งเข้าระบบ</div>
             {{/unless}}
           </div>

@@ -24,31 +24,115 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
 	    event: 'click',
 	    handler: uploadAnswer
 	}, {
+	    element: '.upload-address',
+	    event: 'click',
+	    handler: uploadAddress
+	}, , {
 	    element: '.upload-all',
 	    event: 'click',
 	    handler: uploadAllAnswer
 	}];
 
     var model = { 'updateTime': null, rooms: [] };
+    var tmpContacts = [];
+    var tmpIndex = 0;
+    var url = 'http://newtestnew.azurewebsites.net/ServiceControl/service.svc/';
+    var urlEdu = 'http://private-edu.azurewebsites.net/webservices/getservice.svc/';
+    //var urlEdu = 'http://localhost:36677/webservices/getservice.svc/';
 
     function init(query) {
-        loadModel();        
-        View.render({ model: model, bindings: bindings, unSync: countUnSync(), contactUnSync: contactUnSync()});
+        loadModel();
+        var tmp = false;
+        if(countUnSync() > 0) tmp = true;
+        View.render({ model: model, bindings: bindings, unSync: countUnSync(), contactUnSync: contactUnSync(), addressUnSync: app.utils.getEditAddress(), haveItems: tmp });
     }
 
     /////////////////////////////////////////////////////////////////////////////
     ////// function for notification tab
     /////////////////////////////////////////////////////////////////////////////
     function countUnSync() {
-        return app.utils.getAnswers().length;
+        return app.utils.getEditAddress().length + app.utils.getAnswers().length;
     }
 
     function uploadAllAnswer() {
         [].forEach.call(document.getElementsByTagName('a'), function (el) {
-            if (el.innerText == 'อัพโหลด') {
-                uploadAnswer({ 'target': el });
+            if (el.getAttribute('id')) {
+                if (el.getAttribute('id').indexOf('upload_') != -1 && el.innerText == 'อัพโหลด') {
+                    uploadAnswer({ 'target': el });
+                }
+                else if (el.getAttribute('id').indexOf('address_') != -1 && el.innerText == 'อัพโหลด') {
+                    uploadAddress({ 'target': el });
+                }
             }
         });
+    }
+
+    function uploadAddress(e) {
+        if (!navigator.onLine) {
+            app.f7.alert('ไม่สามารถเชื่อมต่ออินเตอร์เน็ตได้ โปรดตรวจสอบการตั้งค่า');
+            return;
+        }
+        e.target.style.display = 'none';
+        e.target.nextElementSibling.style.display = '';
+        var id = e.target.getAttribute('data-value');
+        var contacts = JSON.parse(localStorage.getItem("f7Contacts"));
+        var contact = null;
+        for (var i = 0; i < contacts.length; i++) {
+            if (contacts[i].id == id) {
+                contact = contacts[i]; break;
+            }
+        }
+        if (contact) {
+            var memo = JSON.parse(localStorage.getItem("memo"));
+            if (!memo['0'] || !memo['1']) {
+                return;
+            }
+            var _lat = '';
+            if (contact.lat) _lat = contact.lat;
+            var _lng = '';
+            if (contact.long) _lng = contact.long;
+            var _url = url + 'setAddress?AddressID=' + contact.addressId;
+            _url += '&CID=' + contact.CID + '&HouseNumber=' + contact.houseNumber + '&MooNumber=' + contact.mooNumber;
+            _url += '&VillageID=' + contact.villageId + '&Alley=&StreetName=';
+            _url += '&TumbonID=' + contact.tumbonId + '&CityID=' + contact.cityId + '&ProvinceID=' + contact.provinceId;
+            _url += '&PostCode=' + contact.postCode + '&HomeCode=' + contact.homeCode + '&Lat=' + _lat + '&Long=' + _lng;
+            Dom7.ajax({
+                url: _url,
+                method: 'GET',
+                dataType: "json",
+                crossDomain: true,
+                success: function (msg) {
+                    e.target.nextElementSibling.style.display = 'none';
+                    e.target.innerText = '';
+                    e.target.style.display = 'block';
+
+                    var response = JSON.parse(msg);
+                    if (response.status.toLowerCase() == 'ok') {
+                        if (response.newAddressId.length > 0) {
+                            contact.addressId = response.newAddressId;
+                        }
+                        contact.isEdit = false;
+                        for (var i = 0; i < contacts.length; i++) {
+                            if (contacts[i].id == id) {
+                                contacts[i] = contact; break;
+                            }
+                        }
+                    }
+                    localStorage.setItem("f7Contacts", JSON.stringify(contacts));
+                    View.updateCountUnSync(countUnSync());
+                    var icon = document.createElement("i");
+                    icon.className = 'icon ion-checkmark';
+                    e.target.appendChild(icon);
+                    setTimeout(function () {
+                        e.target.parentElement.parentElement.parentElement.remove();
+                    }, 1000);
+                },
+                error: function (error) {
+                    app.f7.alert('โปรดติดต่อผู้ดูแลระบบ', 'ERROR! ' + error.statusText);
+                    app.f7.pullToRefreshDone();
+                }
+            });
+        }
     }
 
     function uploadAnswer(e) {
@@ -68,12 +152,11 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
         var array = [];
         var answer = _.map(_tmp.answers, function (value) { var key = Object.keys(value)[0]; return key + ':' + value[key] });
         var postData = encodeURIComponent(JSON.stringify(answer));
-        var _url = 'http://newtestnew.azurewebsites.net/ServiceControl/service.svc/SaveRecord?Mode=0000&CID=' + CID;
+        var _url = url + 'SaveRecord?Mode=0000&CID=' + CID;
         _url += '&StaffId=' + localStorage.getItem('staff');
         _url += '&HostId=' + localStorage.getItem('host');
         _url += '&RecDate=' + _tmp.recordDate;
         _url += '&SystemType=00001&src=02&Data=' + postData;
-
         Dom7.ajax({
             url: _url,
             method: 'GET',
@@ -84,17 +167,78 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                 e.target.innerText = '';
                 e.target.style.display = 'block';
                 localStorage.removeItem("answer-" + answerId);
-                View.updateCountUnSync(countUnSync());
-                var icon = document.createElement("i");
-                icon.className = 'icon ion-checkmark';
-                e.target.appendChild(icon);
-                setTimeout(function () {
-                    e.target.parentElement.parentElement.parentElement.remove();
-                }, 1000);
+
+                saveQImage("001", e, CID);
             },
             error: function (error) {
                 app.f7.alert('โปรดติดต่อผู้ดูแลระบบ', 'ERROR! ' + error.statusText);
                 app.f7.pullToRefreshDone();
+            }
+        });
+    }
+
+    function saveQImage(imageType, e, CID) {        
+        if (!imageType) {
+            View.updateCountUnSync(countUnSync());
+            var icon = document.createElement("i");
+            icon.className = 'icon ion-checkmark';
+            e.target.appendChild(icon);
+            setTimeout(function () {
+                e.target.parentElement.parentElement.parentElement.remove();
+            }, 1000);
+            return;
+        };
+        
+        var memo = JSON.parse(localStorage.getItem("memo"));
+        if (!memo['0'] || !memo['1']) {
+            View.updateCountUnSync(countUnSync());
+            var icon = document.createElement("i");
+            icon.className = 'icon ion-checkmark';
+            e.target.appendChild(icon);
+            setTimeout(function () {
+                e.target.parentElement.parentElement.parentElement.remove();
+            }, 1000);
+            return;
+        }
+        var _data = {};
+        _data['USERNAME'] = app.utils.Base64.decode(memo['0']);
+        _data['PASSWORD'] = app.utils.Base64.decode(memo['1']);
+        _data['CID'] = CID;
+        _data['staffId'] = localStorage.getItem('staff');
+        _data['hostId'] = localStorage.getItem('host');
+        _data['imageType'] = imageType;
+        _data['url'] = '';
+        if (imageType == '001') {
+            _data['url'] = 'https://nuqlis.blob.core.windows.net/homevisit/' + CID + 'home' + (new Date()).getFullYear();
+        }
+        else if (imageType == '002') {
+            _data['url'] = 'https://nuqlis.blob.core.windows.net/homevisit/' + CID + 'family' + (new Date()).getFullYear();
+        }
+        var _url = urlEdu + 'saveQImage';
+        Dom7.ajax({
+            url: _url,
+            method: 'POST',
+            data: 'json=' + encodeURIComponent(JSON.stringify(_data)),
+            contentType: "application/x-www-form-urlencoded",
+            success: function (msg) {                
+                var response = JSON.parse(JSON.parse(msg));
+                if (response.status.toLowerCase() == 'ok') {
+                    if (imageType == '001') {
+                        imageType = '002';
+                        saveQImage(imageType, e, CID);
+                    }
+                    else {
+                        saveQImage(null, e, CID);
+                    }
+                }
+                else {
+                    app.f7.hideIndicator();
+                    app.f7.alert('โปรดติดต่อผู้ดูแลระบบ', 'SERVER ERROR! ' + response.errorMessage);
+                }
+            },
+            error: function (error) {
+                app.f7.hideIndicator();
+                app.f7.alert('โปรดติดต่อผู้ดูแลระบบ', 'ERROR! ' + error.statusText);
             }
         });
     }
@@ -140,7 +284,7 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                     if (!memo['0'] || !memo['1']) {
                         return;
                     }
-                    var url = 'http://private-edu.azurewebsites.net/webservices/getservice.svc/getStudents?USERNAME=' + app.utils.Base64.decode(memo['0']) + '&PASSWORD=' + app.utils.Base64.decode(memo['1']) + '&YEAR=' + (new Date()).getFullYear();
+                    var url = urlEdu + 'getStudents?USERNAME=' + app.utils.Base64.decode(memo['0']) + '&PASSWORD=' + app.utils.Base64.decode(memo['1']) + '&YEAR=' + (new Date()).getFullYear();
                     Dom7.ajax({
                         url: url,
                         dataType: 'json',
@@ -151,6 +295,7 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                                 model.rooms = [];
                                 var data = response.data;
                                 var contacts = [];
+                                tmpContacts = [];
                                 for (var i = 0; i < data.length; i++) {
                                     var rooms = data[i].rooms;
                                     for (var j = 0; j < rooms.length; j++) {
@@ -175,18 +320,31 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                                                     "studentId": students[k].StudentId,
                                                     "company": "",
                                                     "phone": "", "email": "",
-                                                    "city": "", "isFavorite": true,
-                                                    "lat": students[k].Lat, "long": students[k].Long
+                                                    "cityId": '',
+                                                    "cityDescription": '',
+                                                    "lat": students[k].Lat, "long": students[k].Long,
+                                                    "addressId" : '',
+                                                    "houseNumber": '',
+                                                    "mooNumber": '',
+                                                    "alley": '',
+                                                    "streetName": '',
+                                                    "villageId": '',
+                                                    "villageName": '',
+                                                    "tumbonId": '',
+                                                    "tumbonDescription": '',
+                                                    "provinceId": '',
+                                                    "provinceDescription": '',
+                                                    "postCode": '',
+                                                    "homeCode": ''
                                                 }));
                                             }
                                         }
                                     }
-                                }                                
+                                }
+                                tmpContacts = contacts.slice();
                                 localStorage.setItem("rooms", JSON.stringify(model));
-                                localStorage.setItem("f7Contacts", JSON.stringify(contacts));
-                                app.router.load('list');
-                                app.f7.pullToRefreshDone();
-                                View.render({ model: model, bindings: bindings, unSync: countUnSync(), contactUnSync: contactUnSync() });
+                                tmpIndex = 0;
+                                getAddress();                                
                             }
                             else {
                                 app.f7.alert(response.errorMessage);
@@ -205,6 +363,67 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                 app.f7.pullToRefreshDone();
             }
         );
+    }
+
+    function getAddress() {
+        var CID = tmpContacts[tmpIndex].CID;
+        var _url = url + 'getAddress?CID=' + CID + '&AddressType=002';
+
+        Dom7.ajax({
+            url: _url,
+            method: 'GET',
+            dataType: "json",
+            crossDomain: true,
+            success: function (msg) {                
+                var response = JSON.parse(msg);
+                if (response.status.toLowerCase() == 'ok') {
+                    tmpContacts[tmpIndex].addressId = response.addressID;
+                    tmpContacts[tmpIndex].houseNumber = response.houseNumber;
+                    tmpContacts[tmpIndex].mooNumber = response.mooNumber;
+                    tmpContacts[tmpIndex].alley = response.alley;
+                    tmpContacts[tmpIndex].streetName = response.streetName;
+                    tmpContacts[tmpIndex].villageId = response.villageId;
+                    tmpContacts[tmpIndex].villageName = response.villageName;
+                    tmpContacts[tmpIndex].tumbonId = response.tumbonId;
+                    tmpContacts[tmpIndex].tumbonDescription = response.tumbonDescription;
+                    tmpContacts[tmpIndex].cityId = response.cityId;
+                    tmpContacts[tmpIndex].cityDescription = response.cityDescription;
+                    tmpContacts[tmpIndex].provinceId = response.provinceId;
+                    tmpContacts[tmpIndex].provinceDescription = response.provinceDescription;
+                    tmpContacts[tmpIndex].postCode = response.postCode;
+                    tmpContacts[tmpIndex].homeCode = response.homeCode;
+                    tmpIndex++;
+                    if (tmpIndex < tmpContacts.length) {
+                        getAddress();
+                    }
+                    else {
+                        localStorage.setItem("f7Contacts", JSON.stringify(tmpContacts));
+                        tmpContacts = [];
+                        app.router.load('list');
+                        app.f7.pullToRefreshDone();
+                        View.render({ model: model, bindings: bindings, unSync: countUnSync(), contactUnSync: contactUnSync() });
+                    }
+                }
+                else {
+                    app.f7.alert('ไม่สามารถโหลดที่อยู่ของ ' + CID + ' ได้', 'ERROR! ' + response.errorMessage);
+                    localStorage.setItem("f7Contacts", JSON.stringify(tmpContacts));
+                    tmpContacts = [];
+                    app.router.load('list');
+                    app.f7.pullToRefreshDone();
+                    View.render({ model: model, bindings: bindings, unSync: countUnSync(), contactUnSync: contactUnSync() });
+                    return;
+                }
+            },
+            error: function (error) {
+                app.f7.alert('ไม่สามารถโหลดที่อยู่ของ ' + CID + ' ได้', ' SERVICE ERROR! ' + error.statusText);
+                localStorage.setItem("f7Contacts", JSON.stringify(tmpContacts));
+                tmpContacts = [];
+                app.router.load('list');
+                app.f7.pullToRefreshDone();
+                View.render({ model: model, bindings: bindings, unSync: countUnSync(), contactUnSync: contactUnSync() });
+                return;
+            }
+        });
     }
 
     function roomClick(e) {

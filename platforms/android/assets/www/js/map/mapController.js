@@ -8,6 +8,7 @@
     var routeIndex = 0, legIndex = 0;
     var originText = '';
     var homeLatLong = null, map, destination = null;
+    var geocoder;
 
     function init(query) {
         app.f7.showIndicator();
@@ -23,7 +24,7 @@
             contact = new Contact({ isFavorite: query.isFavorite });
             state.isNew = true;
         }
-        View.render({ model: contact, bindings: bindings });
+        View.render({ model: contact, bindings: bindings, saveAddressHandle: saveAddress });
         if (!navigator.onLine) {
             app.f7.hideIndicator();
             app.f7.alert('ไม่สามารถเชื่อมต่ออินเตอร์เน็ตได้ โปรดตรวจสอบการตั้งค่า');
@@ -38,7 +39,34 @@
         }
     }
 
+    function saveAddress(houseNumber, mooNumber, provinceId, provinceDescription,
+        cityId, cityDescription, tumbonId, tumbonDescription, villageId, villageName, postCode) {
+        contact.houseNumber = houseNumber;
+        contact.mooNumber = mooNumber;
+        contact.provinceId = provinceId;
+        contact.provinceDescription = provinceDescription;
+        contact.cityId = cityId;
+        contact.cityDescription = cityDescription;
+        contact.tumbonId = tumbonId;
+        contact.tumbonDescription = tumbonDescription;
+        contact.villageId = villageId;
+        contact.villageName = villageName;
+        contact.postCode = postCode;
+        contact.lat = null;
+        contact.long = null;
+        contact.isEdit = true;
+        var contacts = JSON.parse(localStorage.getItem("f7Contacts"));
+        for (var i = 0; i < contacts.length; i++) {
+            if (contacts[i].id == contact.id) {
+                contacts[i] = contact;
+            }
+        }
+        localStorage.setItem("f7Contacts", JSON.stringify(contacts));
+        onMapsApiLoaded();
+    }
+
     function onMapsApiLoaded() {
+        geocoder = new google.maps.Geocoder();
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
                 originText = 'ตำแหน่งปัจจุบัน';
@@ -62,21 +90,31 @@
                 var _destination = new google.maps.LatLng(13.759663, 100.501936); // bangkok;
                 if (contact.lat && contact.long) {                    
                     _destination = new google.maps.LatLng(contact.lat, contact.long);
+                    calculateAndDisplayRoute(directionsService, directionsDisplay, mapOptions.center, _destination);
                 }
                 else {
-                    var buttons1 = [
-                        {
-                            text: 'ไม่พบพิกัดที่เลือก(ใช้ กทม. เป็นพิกัดอ้างอิง)',
-                            label: true
-                        },
-                        {
-                            text: 'ตกลง',
-                            bold: true
-                        }
-                    ];
-                    app.f7.actions(buttons1);
-                }
-                calculateAndDisplayRoute(directionsService, directionsDisplay, mapOptions.center, _destination);
+                    var llFromAddr = addressToString(contact);
+                    if (llFromAddr.length > 0) {
+                        geocoder.geocode({ 'address': llFromAddr }, function (results, status) {
+                            _destination = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
+                            calculateAndDisplayRoute(directionsService, directionsDisplay, mapOptions.center, _destination);
+                        });
+                    }
+                    else {
+                        var buttons1 = [
+                            {
+                                text: 'ไม่พบพิกัดที่เลือก(ใช้ กทม. เป็นพิกัดอ้างอิง)',
+                                label: true
+                            },
+                            {
+                                text: 'ตกลง',
+                                bold: true
+                            }
+                        ];
+                        app.f7.actions(buttons1);
+                        calculateAndDisplayRoute(directionsService, directionsDisplay, mapOptions.center, _destination);
+                    }
+                }                
             },
             function (error) {
                 app.f7.hideIndicator();
@@ -90,6 +128,16 @@
         else {
             directionByDefault();
         }
+    }
+
+    function addressToString(contact) {
+        var result = '';
+        if (contact.villageName) result = contact.villageName;
+        if (contact.tumbonDescription) result += ' ต.' + contact.tumbonDescription;
+        if (contact.cityDescription) result += ' อ.' + contact.cityDescription;
+        if (contact.provinceDescription) result += ' จ.' + contact.provinceDescription;
+        //if (contact.postCode) result += ' ' + contact.postCode;
+        return result;
     }
 
     function directionByDefault() {
@@ -131,6 +179,7 @@
                         homeLatLong = destination;
                         contact.lat = homeLatLong.lat();
                         contact.long = homeLatLong.lng();
+                        contact.isEdit = true;
                         var contacts = JSON.parse(localStorage.getItem("f7Contacts"));
                         for (var i = 0; i < contacts.length; i++) {
                             if (contacts[i].id == contact.id) {
@@ -166,6 +215,17 @@
                 if (originText != '') {
                     response.routes[0].legs[0].start_address = originText;
                     response.routes[0].legs[0].end_address = contact.firstName + ' ' + contact.lastName;
+
+                    contact.lat = homeLatLong.lat();
+                    contact.long = homeLatLong.lng();
+                    contact.isEdit = true;
+                    var contacts = JSON.parse(localStorage.getItem("f7Contacts"));
+                    for (var i = 0; i < contacts.length; i++) {
+                        if (contacts[i].id == contact.id) {
+                            contacts[i] = contact;
+                        }
+                    }
+                    localStorage.setItem("f7Contacts", JSON.stringify(contacts));
                 }
                 var tmp = response.routes[routeIndex].legs[legIndex];
                 View.setHeader(tmp.distance.text.replace(' km', 'กม.'), tmp.duration.text.replace(' hours ', '.').replace(' mins', 'ชม'));
