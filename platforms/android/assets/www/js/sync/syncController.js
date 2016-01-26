@@ -209,10 +209,10 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
         _data['imageType'] = imageType;
         _data['url'] = '';
         if (imageType == '001') {
-            _data['url'] = 'https://nuqlis.blob.core.windows.net/homevisit/' + CID + 'home' + (new Date()).getFullYear();
+            _data['url'] = 'nuqlis.blob.core.windows.net/homevisit/' + CID + 'home' + (new Date()).getFullYear();
         }
         else if (imageType == '002') {
-            _data['url'] = 'https://nuqlis.blob.core.windows.net/homevisit/' + CID + 'family' + (new Date()).getFullYear();
+            _data['url'] = 'nuqlis.blob.core.windows.net/homevisit/' + CID + 'family' + (new Date()).getFullYear();
         }
         var _url = urlEdu + 'saveQImage';
         Dom7.ajax({
