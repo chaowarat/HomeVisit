@@ -37,7 +37,7 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
     var tmpContacts = [];
     var tmpIndex = 0;
     var url = 'http://newtestnew.azurewebsites.net/ServiceControl/service.svc/';
-    var urlEdu = 'http://private-edu.azurewebsites.net/webservices/getservice.svc/';
+    var urlEdu = 'http://alphaedu.azurewebsites.net/webservices/getservice.svc/';
     //var urlEdu = 'http://localhost:36677/webservices/getservice.svc/';
 
     function init(query) {
