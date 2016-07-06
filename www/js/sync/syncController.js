@@ -37,8 +37,6 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
     var tmpContacts = [];
     var tmpIndex = 0;
     var url = 'http://newtestnew.azurewebsites.net/ServiceControl/service.svc/';
-    var urlEdu = 'http://alphaedu.azurewebsites.net/webservices/getservice.svc/';
-    //var urlEdu = 'http://localhost:36677/webservices/getservice.svc/';
 
     function init(query) {
         loadModel();
@@ -214,7 +212,7 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
         else if (imageType == '002') {
             _data['url'] = 'nuqlis.blob.core.windows.net/homevisit/' + CID + 'family' + (new Date()).getFullYear();
         }
-        var _url = urlEdu + 'saveQImage';
+        var _url = url + 'saveQImage';
         Dom7.ajax({
             url: _url,
             method: 'POST',
@@ -284,45 +282,45 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                     if (!memo['0'] || !memo['1']) {
                         return;
                     }
-                    var url = urlEdu + 'getStudents?USERNAME=' + app.utils.Base64.decode(memo['0']) + '&PASSWORD=' + app.utils.Base64.decode(memo['1']) + '&YEAR=' + (new Date()).getFullYear();
+                    var _url = url + 'GetClassRoomForClassTeacher?host=' + localStorage.getItem('host') + '&staffId=' + localStorage.getItem('staff');
                     Dom7.ajax({
-                        url: url,
+                        url: _url,
                         dataType: 'json',
-                        success: function (msg) {                            
+                        success: function (msg) {                      
                             var response = JSON.parse(msg);
-                            if (response.status.toLowerCase() == 'ok') {
                                 model.updateTime = app.utils.getDateTimeNow();
                                 model.rooms = [];
-                                var data = response.data;
+                                var data = response.Data;
                                 var contacts = [];
                                 tmpContacts = [];
                                 for (var i = 0; i < data.length; i++) {
-                                    var rooms = data[i].rooms;
-                                    for (var j = 0; j < rooms.length; j++) {
-                                        model.rooms.push({
-                                            id: data[i].classId + '' + rooms[j].roomId,
-                                            classId: data[i].classId,
-                                            roomId: rooms[j].roomId,
-                                            text: data[i].className + '/' + rooms[j].roomId
-                                        });
-                                        var students = rooms[j].students;
+                                    var _class = data[i].title;
+                                    var _classId = data[i].class;
+                                    var _room = data[i].room;
+                                    model.rooms.push({
+                                      id: _classId + '' + _room,
+                                      classId: _classId,
+                                      roomId: _room,
+                                      text: _class
+                                    });
+                                    var students = data[i].listChild;
                                         for (var k = 0; k < students.length; k++) {
-                                            if (students[k].Name) {
-                                                var name = students[k].Name.split(' ').slice(1).join(' ').trim();
+                                            if (students[k].name) {
+                                                var name = students[k].name.split(' ').slice(1).join(' ').trim();
                                                 contacts.push(new Contact({
                                                     "firstName": name.split(' ')[0],
                                                     "lastName": name.split(' ').slice(1).join(' ').trim(),
-                                                    "class": data[i].className,
-                                                    "classId": data[i].classId,
-                                                    "roomId": rooms[j].roomId,
-                                                    "pic": students[k].Pic,
-                                                    "CID": students[k].CID,
-                                                    "studentId": students[k].StudentId,
+                                                    "class": _class,
+                                                    "classId": _classId,
+                                                    "roomId": _room,
+                                                    "pic": students[k].pic,
+                                                    "CID": students[k].cid,
+                                                    "studentId": students[k].studentId,
                                                     "company": "",
                                                     "phone": "", "email": "",
                                                     "cityId": '',
                                                     "cityDescription": '',
-                                                    "lat": students[k].Lat, "long": students[k].Long,
+                                                    "lat": students[k].lat, "long": students[k].lng,
                                                     "addressId" : '',
                                                     "houseNumber": '',
                                                     "mooNumber": '',
@@ -339,17 +337,11 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                                                 }));
                                             }
                                         }
-                                    }
                                 }
                                 tmpContacts = contacts.slice();
                                 localStorage.setItem("rooms", JSON.stringify(model));
                                 tmpIndex = 0;
-                                getAddress();                                
-                            }
-                            else {
-                                app.f7.alert(response.errorMessage);
-                                app.f7.pullToRefreshDone();
-                            }
+                                getAddress();
                         },
                         error: function (error) {
                             console.log(error)
