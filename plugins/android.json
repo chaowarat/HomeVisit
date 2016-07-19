@@ -56,9 +56,6 @@
         },
         "org.apache.cordova.geolocation": {
             "PACKAGE_NAME": "com.nuqlis.homevisit"
-        },
-        "cordova-plugin-network-information": {
-            "PACKAGE_NAME": "com.nuqlis.homevisit"
         }
     },
     "dependent_plugins": {}

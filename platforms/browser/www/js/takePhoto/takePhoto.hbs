@@ -1,0 +1,66 @@
+<div id="takePhotoModal" class="popup tablet-fullscreen">
+    <div class="view view-popup navbar-fixed">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a href="#" class="back link close-takePhoto">
+                        <i class="icon icon-back"></i><div id="mapTitle">ถ่ายรูป</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="page">
+            <div class="page-content contact-edit-form">
+                <div class="contact-header">
+                    <div class="item-photo">
+                        <img src="http://nuqlis.blob.core.windows.net/pic/{{model.CID}}" onError="this.onerror = null; this.src = 'img/unknown.png';" />
+                    </div>
+                    <div class="header-text">
+                        <h3>{{model.firstName}} {{model.lastName}}</h3>
+                        <p>{{model.company}}</p>
+                        <p>ประเมินล่าสุดเมื่อ --/--/--/</p>
+                    </div>
+                </div>
+                <div style="height:300px">
+                    <!--ถ่ายรูปบ้าน-->
+                    <div class="card">
+                        <div class="card-header">รูปบ้าน</div>
+                        <div class="card-content">
+                            <div class="card-content-inner">
+                                <img id="imgHome" src="{{model.imgHome}}" onError="this.onerror=null;this.src='img/noimage.jpg';" style="height: 228px;width:98%;display: block;margin: 0 auto;" />
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="left">
+                                <a href="#" style="display:inline;float:left;" class="button button-home-photo"><i class="ion-camera" style="font-size: 45px;color:gray"></i></a>
+                                <a href="#" style="display:inline;float:left;" class="button button-home-library"><i class="ion-images" style="font-size: 45px;color:gray"></i></a>
+                            </div>
+                            <div class="right">
+                                <a href="#" class="button button-home-upload"><i class="ion-upload" style="font-size: 45px;"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <!--ถ่ายรูปครอบครัว-->
+                    <div class="card">
+                        <div class="card-header">รูปครอบครัว</div>
+                        <div class="card-content">
+                            <div class="card-content-inner">
+                                <img id="imgFamily" src="{{model.imgFamily}}" onError="this.onerror = null; this.src = 'img/noimage.jpg';" style="height: 228px;width:98%;display: block;margin: 0 auto;" />
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="left">
+                                <a href="#" style="display:inline;float:left;" class="button button-family-photo"><i class="ion-camera" style="font-size: 45px;color:gray"></i></a>
+                                <a href="#" style="display:inline;float:left;" class="button button-family-library"><i class="ion-images" style="font-size: 45px;color:gray"></i></a>
+                            </div>
+                            <div class="right">
+                                <a href="#" class="button button-family-upload"><i class="ion-upload" style="font-size: 45px;"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

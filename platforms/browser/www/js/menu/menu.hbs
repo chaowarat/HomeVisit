@@ -1,0 +1,55 @@
+<div class="popup tablet-fullscreen">
+    <div class="view view-popup navbar-fixed">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a href="#" class="back link">
+                        <i class="icon icon-back"></i>
+                    </a>
+                </div>เมนู
+            </div>
+        </div>
+        <div class="page">
+            <div class="page-content contact-edit-form">
+                <div class="contact-header">
+                    <div class="item-photo">
+                        <img src="http://nuqlis.blob.core.windows.net/pic/{{model.CID}}" onError="this.onerror = null; this.src = 'img/unknown.png';">
+                    </div>
+                    <div class="header-text">
+                        <h3>{{model.firstName}} {{model.lastName}}</h3>
+                        <p>{{model.company}}</p>
+                        <p>ประเมินล่าสุดเมื่อ 11/22/33</p>
+                    </div>
+                </div>
+
+                <div style="text-align:center;padding: 0 20px 0 20px">
+                    <p class="buttons-row">
+                        <a href="#" class="button button-raised button-showInfo">ข้อมูลส่วนบุคคล</a>
+                        <a href="#" class="button button-raised button-assessment">ทำแบบประเมิน</a>
+                    </p>
+                    <p class="buttons-row">
+                        <a href="#" class="button button-raised button-takePhoto">ถ่ายรูป</a>
+                        <a href="#" class="button button-raised button-map">แผนที่</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="picker-modal picker-info">
+        <div class="toolbar">
+            <div class="toolbar-inner">
+                <div class="left"></div>
+                <div class="right"><a href="#" class="close-picker">ปิด</a></div>
+            </div>
+        </div>
+        <div class="picker-modal-inner">
+            <div class="content-block">
+                <h4>ไม่สามารถค้นหาตำแหน่งของอุปกรณ์ได้</h4>
+                <p>โปรดตรวจสอบการตั้งค่าตำแหน่งของอุปกรณ์(Location) ว่าเปิดใช้งานแล้ว</p>
+                <p>*ระบบจะใช้ตำแหน่งอ้างอิง กรุงเทพฯ กรณีค้นหาตำแหน่งไม่พบ</p>
+            </div>
+        </div>
+    </div>
+
+</div>

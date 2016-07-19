@@ -43,7 +43,11 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
         var tmp = false;
         if(countUnSync() > 0) tmp = true;
         View.render({ model: model, bindings: bindings, unSync: countUnSync(), contactUnSync: contactUnSync(), addressUnSync: app.utils.getEditAddress(), haveItems: tmp });
-    }
+		if(localStorage.getItem("autoupdate") == "true"){
+			localStorage.setItem("autoupdate", "false");
+			callService();
+		}
+	}
 
     /////////////////////////////////////////////////////////////////////////////
     ////// function for notification tab
@@ -278,7 +282,18 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
         app.f7.confirm('', 'อัพเดทข้อมูลหรือไม่?',
             function () {
                 setTimeout(function () {
-                    var memo = JSON.parse(localStorage.getItem("memo"));
+                    callService();                    
+                }, 1000);
+            },
+            function () {
+                app.f7.pullToRefreshDone();
+            }
+        );
+    }
+	
+	function callService(){
+		app.f7.showIndicator();
+		var memo = JSON.parse(localStorage.getItem("memo"));
                     if (!memo['0'] || !memo['1']) {
                         return;
                     }
@@ -344,18 +359,13 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                                 getAddress();
                         },
                         error: function (error) {
+							app.f7.hideIndicator();
                             console.log(error)
                             app.f7.alert(error.statusText + ' โปรดติดต่อผู้ดูแลระบบ');
                             app.f7.pullToRefreshDone();
                         }
-                    });                    
-                }, 1000);
-            },
-            function () {
-                app.f7.pullToRefreshDone();
-            }
-        );
-    }
+                    });
+	}
 
     function getAddress() {
         var CID = tmpContacts[tmpIndex].CID;
@@ -389,6 +399,7 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                         getAddress();
                     }
                     else {
+						app.f7.hideIndicator();
                         localStorage.setItem("f7Contacts", JSON.stringify(tmpContacts));
                         tmpContacts = [];
                         app.router.load('list');
@@ -407,6 +418,7 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
                 }
             },
             error: function (error) {
+				app.f7.hideIndicator();
                 app.f7.alert('ไม่สามารถโหลดที่อยู่ของ ' + CID + ' ได้', ' SERVICE ERROR! ' + error.statusText);
                 localStorage.setItem("f7Contacts", JSON.stringify(tmpContacts));
                 tmpContacts = [];

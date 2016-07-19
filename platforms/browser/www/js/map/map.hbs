@@ -1,0 +1,52 @@
+<div id="mapModal" class="popup tablet-fullscreen">
+    <div class="view view-popup navbar-fixed">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a href="#" class="back link close-map">
+                        <i class="icon icon-back"></i>
+                    </a>
+                </div>
+                <div id="mapTitle">แผนที่</div>
+                <div class="right" style="padding:15px">
+                    <a href="#" data-panel="right" class="back link open-panel">
+                        <i class="icon ion-navigate"></i>
+                    </a>
+                </div>                
+            </div>
+        </div>
+        <div class="page">
+            <div class="page-content contact-edit-form">
+                <div style="width:100%;height:100%">
+                    <div style="width:100%;height:100%" id="map"></div>
+                </div>
+                <a href="#" class="floating-button edit-address-link" style="margin-right:30px;font-size:32px">
+                    <i class="icon ion-home"></i>
+                </a>                
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-overlay"></div>    
+
+    <!-- Right Panel with Cover effect -->
+    <div class="panel panel-right panel-cover">
+        <div id="right-panel" style="width: 100%;height:100%;"></div>
+    </div>
+
+    <div class="picker-modal picker-info">
+        <div class="toolbar">
+            <div class="toolbar-inner">
+                <div class="left"></div>
+                <div class="right"><a href="#" class="close-picker">ปิด</a></div>
+            </div>
+        </div>
+        <div class="picker-modal-inner">
+            <div class="content-block">
+                <h4>ไม่สามารถค้นหาตำแหน่งของอุปกรณ์ได้</h4>
+                <p>โปรดตรวจสอบการตั้งค่าตำแหน่งของอุปกรณ์(Location) ว่าเปิดใช้งานแล้ว</p>
+                <p>*ระบบจะใช้ตำแหน่งอ้างอิง กรุงเทพฯ กรณีค้นหาตำแหน่งไม่พบ</p>
+            </div>
+        </div>
+    </div>
+</div>

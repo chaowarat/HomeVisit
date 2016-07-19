@@ -37,23 +37,6 @@ module.exports = [
         "clobbers": [
             "CameraPopoverHandle"
         ]
-    },
-    {
-        "file": "plugins/cordova-plugin-network-information/www/network.js",
-        "id": "cordova-plugin-network-information.network",
-        "pluginId": "cordova-plugin-network-information",
-        "clobbers": [
-            "navigator.connection",
-            "navigator.network.connection"
-        ]
-    },
-    {
-        "file": "plugins/cordova-plugin-network-information/www/Connection.js",
-        "id": "cordova-plugin-network-information.Connection",
-        "pluginId": "cordova-plugin-network-information",
-        "clobbers": [
-            "Connection"
-        ]
     }
 ];
 module.exports.metadata = 
@@ -61,8 +44,7 @@ module.exports.metadata =
 {
     "cordova-plugin-whitelist": "1.0.0",
     "org.apache.cordova.camera": "0.3.6",
-    "org.apache.cordova.geolocation": "0.3.12",
-    "cordova-plugin-network-information": "1.1.0"
+    "org.apache.cordova.geolocation": "0.3.12"
 }
 // BOTTOM OF METADATA
 });

@@ -1,0 +1,83 @@
+<div id="formModal" class="popup tablet-fullscreen">
+    <div class="view view-popup navbar-fixed">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a href="#" class="back link close-form">
+                        <i class="icon icon-back"></i>
+                    </a>
+                </div>
+                <div class="right contact-save-link">
+                    <a href="#" class="link">บันทึก</a>
+                </div>
+            </div>
+        </div>
+        <div class="page">
+            <div class="page-content contact-edit-form">
+                <div class="contact-header">
+                    <div class="item-photo">
+                        <img src="http://nuqlis.blob.core.windows.net/pic/{{model.CID}}" style="width:38px;height:38px" onError="this.onerror = null; this.src = 'img/unknown.png';">
+                    </div>
+                    <div class="header-text">
+                        <h3>{{model.firstName}} {{model.lastName}}</h3>
+                        <p>{{model.company}}</p>
+                    </div>
+                </div>
+
+                {{#unless data}}
+                <h3>ยังไม่ได้เลือกแบบฟอร์ม หรือแบบฟอร์มใช้งานไม่ได้</h3>
+                {{/unless}}
+
+                {{#if data}}
+                <div style="height:90%;margin-top:-50px" class="swiper-container swiper-init" data-speed="400" data-space-between="40" data-pagination=".swiper-pagination">
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-wrapper" style="height:83%;">
+                        {{#each data}}
+                        <div class="swiper-slide">
+                            <div class="content-block-title" style="text-align:center;font-weight: bold;" section="{{id}}">{{text}}</div>
+                            <div class="page-content daily-list">
+                                <div class="list-block" style="margin-top:-60px">
+                                    <div class="list-group">
+                                        {{#each details}}
+                                        <div class="content-block-title" data-id="{{id}}">{{text}}</div>
+                                        {{#if isQuestion}}
+                                        <div class="contact-other list-block">
+                                            <ul>
+                                                {{#if isInputText}}
+                                                <li>
+                                                    <div class="item-input">
+                                                        <textarea style="padding:0 20px 0 20px;" data-type="TEXT" placeholder="รายละเอียด..." type="text" name="{{../id}}" data-id="{{id}}">{{answerText}}</textarea>
+                                                    </div>
+                                                </li>
+                                                {{else}}
+                                                {{#each answers}}
+                                                <li>
+                                                    <label class="label-radio item-content">
+                                                        <input data-type="QA" type="radio" name="{{../id}}" value="{{id}}" {{#if checked}} checked{{/if}} />
+                                                        <div class="item-media">
+                                                            <i class="icon icon-form-radio"></i>
+                                                        </div>
+                                                        <div class="item-inner">
+                                                            <div class="item-title">{{text}}</div>
+                                                        </div>
+                                                    </label>
+                                                </li>
+                                                {{/each}}
+                                                {{/if}}
+                                            </ul>
+                                        </div>
+                                        {{/if}}
+                                        {{/each}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+            </d
+        </div>
+    </div>
+</div>

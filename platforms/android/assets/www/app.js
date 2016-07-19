@@ -28,7 +28,21 @@ define('app', ['js/router', 'js/utils'], function(Router, Utils) {
     });
 
     var isGetMap = false;
-
+	
+	var memo = JSON.parse(localStorage.getItem("memo"));
+	if (memo) {
+	    if(navigator.onLine){
+			f7.confirm('อัพเดทข้อมูลหรือไม่?', 'เชื่อมต่ออินเตอร์เน็ตอยู่',
+				function () {
+					localStorage.setItem("autoupdate", "true");
+					Router.load('sync');
+				},
+				function () {
+				}
+			);			
+		}
+	}
+		
 	return {
 		f7: f7,
 		mainView: mainView,

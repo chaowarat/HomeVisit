@@ -32,7 +32,7 @@
             menu: menu,
             loginCallback: login,
             header: getHeaderName(0)
-        });        
+        });
     }
 
     function countUnSync() {

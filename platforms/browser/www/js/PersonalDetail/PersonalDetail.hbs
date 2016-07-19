@@ -1,0 +1,129 @@
+<div class="popup tablet-fullscreen" id="personalDetailModal">
+    <div class="view view-popup navbar-fixed">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a href="#" class="back link close-Form">
+                        <i class="icon icon-back"></i>
+                    </a>
+                </div>ข้อมูลส่วนบุคคล
+            </div>
+        </div>
+        <div class="page">
+            <div class="page-content contact-edit-form">
+                <div class="contact-header">
+                    <div class="item-photo">
+                        <img src="http://nuqlis.blob.core.windows.net/pic/{{model.CID}}" onError="this.onerror = null; this.src = 'img/unknown.png';">
+                    </div>
+                    <div class="header-text">
+                        <h3>{{model.firstName}} {{model.lastName}}</h3>
+                        <p>{{model.company}}</p>
+                    </div>
+                </div>
+
+                {{#unless data}}
+                <h3>ไม่มีข้อมูล</h3>
+                {{/unless}}
+
+                {{#if data}}
+                <div class="list-block">
+                    <ul>
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <p>หมายเลขบัตรประชาชน : {{data.CID}}</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <p>ชื่อ : {{data.Title}} {{data.Name}}</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <p>Host ปัจจุบัน : {{data.CurrentHostName}}</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <p>วันเกิด : {{data.DOB}}</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <p>เพศ : {{data.Gender}}</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <p>น้ำหนัก : {{data.Weight}}</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <p>ส่วนสูง : {{data.Height}}</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <p>สถานะ : {{data.MariageStatus}}</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <p>เบอร์โทรศัพท์ : {{data.Mobile}}</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <p>สัญชาติ : {{data.Nation}}</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <p>เชื้อชาติ : {{data.Race}}</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <p>ศาสนา : {{data.Religion}}</p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                {{/if}}
+
+                <div class="list-block">
+                    <ul>
+                        <li>
+                            <a href="#" class="item-link list-button contact-delete-button">ลบรายชื่อ</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,69 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {
+            "config.xml": {
+                "parents": {
+                    "/*": [
+                        {
+                            "xml": "<feature name=\"Camera\"><param name=\"browser-package\" value=\"Camera\" /></feature>",
+                            "count": 1
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "installed_plugins": {
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.nuqlis.homevisit"
+        },
+        "org.apache.cordova.camera": {
+            "PACKAGE_NAME": "com.nuqlis.homevisit"
+        },
+        "org.apache.cordova.geolocation": {
+            "PACKAGE_NAME": "com.nuqlis.homevisit"
+        }
+    },
+    "dependent_plugins": {},
+    "modules": [
+        {
+            "file": "plugins/org.apache.cordova.camera/www/CameraConstants.js",
+            "id": "org.apache.cordova.camera.Camera",
+            "pluginId": "org.apache.cordova.camera",
+            "clobbers": [
+                "Camera"
+            ]
+        },
+        {
+            "file": "plugins/org.apache.cordova.camera/www/CameraPopoverOptions.js",
+            "id": "org.apache.cordova.camera.CameraPopoverOptions",
+            "pluginId": "org.apache.cordova.camera",
+            "clobbers": [
+                "CameraPopoverOptions"
+            ]
+        },
+        {
+            "file": "plugins/org.apache.cordova.camera/www/Camera.js",
+            "id": "org.apache.cordova.camera.camera",
+            "pluginId": "org.apache.cordova.camera",
+            "clobbers": [
+                "navigator.camera"
+            ]
+        },
+        {
+            "file": "plugins/org.apache.cordova.camera/src/browser/CameraProxy.js",
+            "id": "org.apache.cordova.camera.CameraProxy",
+            "pluginId": "org.apache.cordova.camera",
+            "runs": true
+        }
+    ],
+    "plugin_metadata": {
+        "cordova-plugin-whitelist": "1.0.0",
+        "org.apache.cordova.camera": "0.3.6",
+        "org.apache.cordova.geolocation": "0.3.12"
+    }
+}

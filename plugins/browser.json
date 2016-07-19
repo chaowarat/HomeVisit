@@ -1,0 +1,21 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.nuqlis.homevisit"
+        },
+        "org.apache.cordova.camera": {
+            "PACKAGE_NAME": "com.nuqlis.homevisit"
+        },
+        "org.apache.cordova.geolocation": {
+            "PACKAGE_NAME": "com.nuqlis.homevisit"
+        }
+    },
+    "dependent_plugins": {}
+}
