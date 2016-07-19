@@ -17,7 +17,7 @@
 	}];
 	var pictureSource, destinationType;
 	var cameraPopoverHandle, isTakePhoto = true, isHome = true;
-	var urlEdu = 'http://alphaedu.azurewebsites.net/webservices/getservice.svc/';
+	var urlEdu = 'http://newtestnew.azurewebsites.net/ServiceControl/postedu.svc/';
 
 	function init(query) {
 	    pictureSource = navigator.camera.PictureSourceType;

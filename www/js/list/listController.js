@@ -42,7 +42,7 @@
     function login(user, pass) {
         if (user && pass) {
             app.f7.showIndicator();
-            var url = 'http://private-edu.azurewebsites.net/webservices/getservice.svc/getCheckUser?USERNAME=' + user + '&PASSWORD=' + pass;
+            var url = 'http://newtestnew.azurewebsites.net/ServiceControl/GetEduService.svc/getCheckUser?USERNAME=' + user + '&PASSWORD=' + pass;
             Dom7.ajax({
                 url: url,
                 dataType: 'json',

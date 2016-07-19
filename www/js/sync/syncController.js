@@ -212,7 +212,7 @@ define(["app", "js/contactModel", "js/sync/syncView"], function (app, Contact, V
         else if (imageType == '002') {
             _data['url'] = 'nuqlis.blob.core.windows.net/homevisit/' + CID + 'family' + (new Date()).getFullYear();
         }
-        var _url = url + 'saveQImage';
+        var _url = 'http://newtestnew.azurewebsites.net/ServiceControl/postedu.svc/saveQImage';
         Dom7.ajax({
             url: _url,
             method: 'POST',

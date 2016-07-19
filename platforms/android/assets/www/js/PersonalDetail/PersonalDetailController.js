@@ -1,6 +1,6 @@
 ﻿define(["app", "js/contactModel", "js/PersonalDetail/PersonalDetailView"], function (app, Contact, View) {
     var contact = null;
-    var url = 'http://alphacase.azurewebsites.net/ServiceControl/CMJsonService.svc/';
+    var url = 'http://newtestnew.azurewebsites.net/ServiceControl/Service.svc/';
 	var state = {
 		isNew: false
 	};

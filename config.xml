@@ -1,4 +1,4 @@
-<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="com.nuqlis.homevisit" version="1.0.7">
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="com.nuqlis.homevisit" version="1.0.8">
   <name>HomeVisit</name>
   <description>Home visit</description>
   <author href="http://www.nuqlis.com" email="childwelfare.nu@gmail.com">Woralak-Dev</author>
